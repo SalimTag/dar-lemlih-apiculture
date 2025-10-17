@@ -1,0 +1,102 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "products": "Collection",
+    "about": "Notre histoire",
+    "blog": "Recettes & Journal",
+    "contact": "Contact",
+    "account": "Espace client",
+    "cart": "Panier",
+    "login": "Se connecter",
+    "logout": "Se déconnecter"
+  },
+  "hero": {
+    "title": "Un miel marocain rare, façonné avec révérence.",
+    "subtitle": "Des sommets de l’Atlas aux fleurs du désert, chaque jarre révèle un terroir préservé par nos apiculteurs artisans.",
+    "primaryCta": "Explorer la collection",
+    "secondaryCta": "Voir notre miel",
+    "alt": "Pots de miel Dar Lemlih alignés sur une table en marbre, baignés par la lumière marocaine"
+  },
+  "usp": {
+    "atlas": {
+      "title": "Origine Atlas",
+      "description": "Récolté en altitude pour une complexité minérale et une profondeur florale exceptionnelles."
+    },
+    "lab": {
+      "title": "Analyses laboratoire",
+      "description": "Des analyses indépendantes garantissent pureté, traçabilité et enzymes actives."
+    },
+    "sustainable": {
+      "title": "Emballage durable",
+      "description": "Verre recyclable et couvercles façonnés à la main pensés pour être réutilisés."
+    }
+  },
+  "cta": {
+    "wholesale": "Parler à un concierge miel",
+    "story": "Pourquoi notre miel"
+  },
+  "socialProof": {
+    "title": "Excellence certifiée",
+    "subtitle": "Plébiscité par les sommeliers, les rituels spa et les chefs étoilés autour de la Méditerranée.",
+    "certifications": {
+      "ifos": "IFOS Pure",
+      "iso": "ISO 22000",
+      "halal": "Halal Maroc"
+    }
+  },
+  "steps": {
+    "foraging": {
+      "title": "Butinage des fleurs sauvages",
+      "description": "Nos abeilles parcourent des vallées biodiverses guidées par les calendriers apicoles ancestraux."
+    },
+    "harvest": {
+      "title": "Récolte à l’aube",
+      "description": "Les rayons sont levés avant le lever du soleil pour préserver arômes et enzymes volatiles."
+    },
+    "analysis": {
+      "title": "Certification en laboratoire",
+      "description": "Chaque lot passe par des analyses de pollen, d’humidité et de pureté pour une traçabilité totale."
+    },
+    "craft": {
+      "title": "Mise en jarre artisanale",
+      "description": "Décantation lente, filtration minimale et habillage manuel prêt pour votre table."
+    }
+  },
+  "footer": {
+    "rights": "Tous droits réservés.",
+    "privacy": "Confidentialité",
+    "terms": "Mentions légales",
+    "cookies": "Cookies"
+  },
+  "auth": {
+    "title": "Votre compte Dar Lemlih",
+    "tabs": {
+      "login": "Connexion",
+      "register": "Créer un compte",
+      "reset": "Réinitialiser"
+    },
+    "email": "Adresse email",
+    "password": "Mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "forgot": "Mot de passe oublié ?",
+    "submit": "Continuer",
+    "oauth": "Continuer avec {{provider}}",
+    "success": "Connexion réussie.",
+    "logout": "Vous êtes déconnecté."
+  },
+  "cookieBanner": {
+    "title": "Nous faisons aussi des cookies au miel.",
+    "description": "Nous utilisons des cookies pour personnaliser votre expérience, mesurer l’audience et proposer des offres plus justes.",
+    "accept": "Tout accepter",
+    "preferences": "Gérer mes choix"
+  },
+  "common": {
+    "languageSelector": "Langues",
+    "journeyDescription": "Nous racontons le voyage de la ruche au pot avec une rigueur absolue.",
+    "wholesaleDescription": "Partagez votre table, votre boutique ou votre rituel bien-être avec un miel pensé pour la haute gastronomie.",
+    "productsPlaceholder": "La collection arrivera bientôt avec des crus artisanaux, des notes de dégustation et le choix des formats.",
+    "storyPlaceholder": "Nous préparons un récit immersif sur l’héritage de la famille Lemlih, les terroirs et l’apiculture régénérative.",
+    "blogPlaceholder": "Des recettes de saison, rituels et récits de provenance seront publiés ici très bientôt.",
+    "contactPlaceholder": "Écrivez à concierge@dar-lemlih.com pour des dégustations sur-mesure, des partenariats retail et des collaborations hôtelières."
+  }
+}

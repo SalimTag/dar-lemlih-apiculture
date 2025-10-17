@@ -1,0 +1,130 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: darlemlih-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-darlemlih}
+      MYSQL_USER: ${MYSQL_USER:-darlemlih}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-darlemlih123}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "3306:3306"
+    networks:
+      - darlemlih-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: darlemlih-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - darlemlih-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      timeout: 10s
+      retries: 5
+
+  # Spring Boot API
+  api:
+    build:
+      context: ../../apps/api
+      dockerfile: ../../infra/docker/Dockerfile.api
+    container_name: darlemlih-api
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-darlemlih}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-darlemlih}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-darlemlih123}
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+      JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
+      MAIL_HOST: ${MAIL_HOST:-smtp.gmail.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME:-your-email@gmail.com}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-your-app-password}
+      MAIL_FROM: ${MAIL_FROM:-noreply@darlemlih.com}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_...}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-whsec_...}
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - darlemlih-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # React Frontend
+  web:
+    build:
+      context: ../../apps/web
+      dockerfile: ../../infra/docker/Dockerfile.web
+    container_name: darlemlih-web
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://api:8080
+      VITE_GA_TRACKING_ID: ${GA_TRACKING_ID:-G-XXXXXXXXXX}
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - darlemlih-network
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+
+  # Nginx Reverse Proxy (if not using web service nginx)
+  nginx:
+    image: nginx:alpine
+    container_name: darlemlih-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - web_static:/usr/share/nginx/html:ro
+    depends_on:
+      - web
+      - api
+    networks:
+      - darlemlih-network
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  web_static:
+    driver: local
+
+networks:
+  darlemlih-network:
+    driver: bridge

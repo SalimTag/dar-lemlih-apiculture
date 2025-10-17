@@ -1,72 +1,50 @@
-import React from 'react';
-import { cn } from '../../lib/utils';
+import * as React from 'react';
+import { Slot } from '@radix-ui/react-slot';
+import { cva, type VariantProps } from 'class-variance-authority';
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
-  size?: 'sm' | 'md' | 'lg';
-  loading?: boolean;
-  children: React.ReactNode;
+import { cn } from '@/lib/utils';
+
+const buttonVariants = cva(
+  'inline-flex items-center justify-center whitespace-nowrap rounded-2xl text-sm font-semibold tracking-tight transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60',
+  {
+    variants: {
+      variant: {
+        default:
+          'bg-amber-500 text-white shadow-card hover:bg-amber-600 active:bg-amber-700 dark:bg-amber-400 dark:hover:bg-amber-300',
+        subtle:
+          'bg-amber-50 text-amber-700 shadow-inner hover:bg-amber-100 dark:bg-charcoal-800 dark:text-amber-200 dark:hover:bg-charcoal-700',
+        outline:
+          'border border-amber-200 bg-transparent text-amber-700 hover:bg-amber-50 dark:border-amber-800 dark:text-amber-200 dark:hover:bg-charcoal-900',
+        ghost:
+          'text-charcoal-800 hover:bg-sand-50 hover:text-charcoal-900 dark:text-amber-100 dark:hover:bg-charcoal-800',
+        link: 'text-amber-600 underline-offset-4 hover:underline dark:text-amber-300'
+      },
+      size: {
+        sm: 'h-9 px-4 py-2 text-sm',
+        md: 'h-11 px-5 py-2.5 text-sm',
+        lg: 'h-12 px-6 text-base',
+        icon: 'h-10 w-10'
+      }
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'md'
+    }
+  }
+);
+
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+  asChild?: boolean;
 }
 
-export default function Button({
-  variant = 'primary',
-  size = 'md',
-  loading = false,
-  disabled,
-  className,
-  children,
-  ...props
-}: ButtonProps) {
-  const variants = {
-    primary: 'bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-500',
-    secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-500',
-    outline: 'border-2 border-orange-500 text-orange-500 hover:bg-orange-50 focus:ring-orange-500',
-    ghost: 'text-gray-600 hover:bg-gray-100 focus:ring-gray-500',
-    danger: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500',
-  };
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : 'button';
+    return (
+      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
+    );
+  }
+);
+Button.displayName = 'Button';
 
-  const sizes = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2',
-    lg: 'px-6 py-3 text-lg',
-  };
-
-  return (
-    <button
-      className={cn(
-        'inline-flex items-center justify-center font-medium rounded-lg transition-colors',
-        'focus:outline-none focus:ring-2 focus:ring-offset-2',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
-        variants[variant],
-        sizes[size],
-        className
-      )}
-      disabled={disabled || loading}
-      {...props}
-    >
-      {loading && (
-        <svg
-          className="animate-spin -ml-1 mr-2 h-4 w-4"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <circle
-            className="opacity-25"
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="4"
-          />
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          />
-        </svg>
-      )}
-      {children}
-    </button>
-  );
-}
+export { Button, buttonVariants };

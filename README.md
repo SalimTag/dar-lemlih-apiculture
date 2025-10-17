@@ -70,6 +70,8 @@ cp apps/web/.env.example apps/web/.env
 docker-compose -f infra/docker/docker-compose.yml up --build
 ```
 
+> 🐝 **Tip:** LocalStack is bundled with the Docker compose setup. The default S3 bucket (`media`) is created automatically at startup so the new media pipeline works out-of-the-box.
+
 4. **Seed demo data**
 ```bash
 # Wait for services to be ready, then:
@@ -80,6 +82,15 @@ curl -X POST http://localhost:8080/api/admin/seed
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:8080
 - API Documentation: http://localhost:8080/swagger-ui.html
+
+## 📸 Media Storage
+
+Product imagery now goes through a dedicated storage abstraction with first-class LocalStack support.
+
+- When `STORAGE_S3_ENABLED=true` (default), uploads target the LocalStack S3 endpoint (`http://localhost:4566`) and land in the `media` bucket.
+- If you prefer pure filesystem storage (e.g., during quick prototypes), set `STORAGE_S3_ENABLED=false`. Files are then persisted under `./uploads` with automatic static serving at `/uploads/*`.
+- All validation limits (max file size, allowed extensions, simultaneous uploads) are configurable through the new `app.uploads.*` properties.
+- The backend automatically ensures the bucket exists at startup when S3 mode is enabled.
 
 ### Default Credentials
 
@@ -113,6 +124,12 @@ docker build -f infra/docker/Dockerfile.web -t darlemlih-web apps/web
 - `JWT_SECRET`: Secret key for JWT signing
 - `PAYMENT_PROVIDER`: Payment gateway (mock|stripe|checkoutcom)
 - `SMTP_HOST`: Email server configuration
+- `STORAGE_S3_ENABLED`: Enable S3/LocalStack media storage (default `true`)
+- `AWS_ENDPOINT_URL`, `AWS_PUBLIC_ENDPOINT`, `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`: LocalStack/AWS connectivity
+- `S3_BUCKET`: Target bucket for media assets (`media` by default)
+- `UPLOAD_PATH`: Filesystem root for local storage fallback (`./uploads`)
+- `UPLOAD_PUBLIC_BASE_URL`: Public URL prefix for locally served files (`/uploads`)
+- `UPLOAD_MAX_SIZE`, `UPLOAD_MAX_FILES`, `UPLOAD_ALLOWED_EXTENSIONS`, `UPLOAD_ALLOWED_CONTENT_TYPES`: Upload validation knobs
 
 ### Frontend (React)
 - `VITE_API_URL`: Backend API URL

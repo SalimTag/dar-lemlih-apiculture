@@ -33,6 +33,12 @@ public class ProductService {
         return toDto(product);
     }
 
+    public ProductDto getById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        return toDto(product);
+    }
+
     public Page<ProductDto> getFeaturedProducts(Pageable pageable) {
         return productRepository.findByIsFeaturedTrueAndIsActiveTrue(pageable)
                 .map(this::toDto);
@@ -54,6 +60,15 @@ public class ProductService {
     public void delete(Long id) {
         if (!productRepository.existsById(id)) return;
         productRepository.deleteById(id);
+    }
+
+    @Transactional
+    public ProductDto update(Long id, ProductDto dto) {
+        Product p = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        applyDto(p, dto);
+        Product saved = productRepository.save(p);
+        return toDto(saved);
     }
 
     private ProductDto toDto(Product product) {

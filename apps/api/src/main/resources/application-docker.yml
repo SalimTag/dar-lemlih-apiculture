@@ -1,4 +1,13 @@
 spring:
+  mail:
+    host: ${SMTP_HOST:mailhog}
+    port: ${SMTP_PORT:1025}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}

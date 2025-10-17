@@ -1,13 +1,22 @@
 package com.darlemlih.apiculture.payments;
 
+import com.stripe.Stripe;
+import com.stripe.exception.SignatureVerificationException;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Event;
+import com.stripe.model.Refund;
+import com.stripe.model.checkout.Session;
+import com.stripe.net.Webhook;
+import com.stripe.param.RefundCreateParams;
+import com.stripe.param.checkout.SessionCreateParams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
+import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Service
 @ConditionalOnProperty(name = "payment.provider", havingValue = "stripe")
@@ -20,74 +29,112 @@ public class StripePaymentGateway implements PaymentGateway {
     @Value("${payment.stripe.webhook-secret}")
     private String webhookSecret;
 
+    @PostConstruct
+    public void init() {
+        Stripe.apiKey = secretKey;
+        log.info("Stripe payment gateway initialized");
+    }
+
     @Override
     public PaymentSession createCheckoutSession(String orderId, BigDecimal amount, String currency, String successUrl, String cancelUrl) {
-        // Note: In production, you would use the actual Stripe SDK
-        // This is a placeholder implementation
-        log.info("Creating Stripe checkout session for order: {}", orderId);
-        
-        // Convert amount to cents
-        long amountInCents = amount.multiply(new BigDecimal(100)).longValue();
-        
-        Map<String, Object> params = new HashMap<>();
-        params.put("payment_method_types", new String[]{"card"});
-        params.put("line_items", createLineItems(orderId, amountInCents, currency));
-        params.put("mode", "payment");
-        params.put("success_url", successUrl);
-        params.put("cancel_url", cancelUrl);
-        params.put("metadata", Map.of("order_id", orderId));
-        
-        // In production, use Stripe SDK:
-        // Session session = Session.create(params);
-        
-        return PaymentSession.builder()
-                .sessionId("cs_test_" + System.currentTimeMillis())
-                .paymentIntentId("pi_test_" + System.currentTimeMillis())
-                .checkoutUrl("https://checkout.stripe.com/pay/cs_test_" + System.currentTimeMillis())
-                .status("pending")
-                .build();
+        try {
+            log.info("Creating Stripe checkout session for order: {} with amount: {} {}", orderId, amount, currency);
+            
+            // Convert amount to cents (Stripe uses smallest currency unit)
+            long amountInCents = amount.multiply(new BigDecimal(100)).longValue();
+            
+            SessionCreateParams params = SessionCreateParams.builder()
+                    .setMode(SessionCreateParams.Mode.PAYMENT)
+                    .setSuccessUrl(successUrl)
+                    .setCancelUrl(cancelUrl)
+                    .addLineItem(
+                            SessionCreateParams.LineItem.builder()
+                                    .setPriceData(
+                                            SessionCreateParams.LineItem.PriceData.builder()
+                                                    .setCurrency(currency.toLowerCase())
+                                                    .setUnitAmount(amountInCents)
+                                                    .setProductData(
+                                                            SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                                                    .setName("Order #" + orderId)
+                                                                    .setDescription("Dar Lemlih Apiculture Products")
+                                                                    .build()
+                                                    )
+                                                    .build()
+                                    )
+                                    .setQuantity(1L)
+                                    .build()
+                    )
+                    .putMetadata("order_id", orderId)
+                    .setPaymentIntentData(
+                            SessionCreateParams.PaymentIntentData.builder()
+                                    .putMetadata("order_id", orderId)
+                                    .build()
+                    )
+                    .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
+                    .build();
+
+            Session session = Session.create(params);
+            
+            log.info("Stripe checkout session created successfully: {}", session.getId());
+            
+            return PaymentSession.builder()
+                    .sessionId(session.getId())
+                    .paymentIntentId(session.getPaymentIntent())
+                    .checkoutUrl(session.getUrl())
+                    .status("pending")
+                    .build();
+                    
+        } catch (StripeException e) {
+            log.error("Failed to create Stripe checkout session for order: {}", orderId, e);
+            throw new RuntimeException("Failed to create payment session: " + e.getMessage(), e);
+        }
     }
 
     @Override
     public boolean verifyWebhook(String signature, String payload) {
         if (signature == null || webhookSecret == null) {
+            log.warn("Missing signature or webhook secret for webhook verification");
             return false;
         }
         
-        // In production, use Stripe SDK:
-        // Webhook.constructEvent(payload, signature, webhookSecret);
-        
-        return true; // Placeholder
+        try {
+            Event event = Webhook.constructEvent(payload, signature, webhookSecret);
+            log.info("Webhook verified successfully. Event type: {}", event.getType());
+            return true;
+        } catch (SignatureVerificationException e) {
+            log.error("Webhook signature verification failed", e);
+            return false;
+        }
     }
 
     @Override
     public RefundResult refund(String paymentIntentId, BigDecimal amount) {
-        log.info("Processing refund for payment intent: {}", paymentIntentId);
-        
-        // In production, use Stripe SDK:
-        // Refund refund = Refund.create(params);
-        
-        return RefundResult.builder()
-                .refundId("re_test_" + System.currentTimeMillis())
-                .status("succeeded")
-                .amount(amount)
-                .reason("requested_by_customer")
-                .build();
-    }
+        try {
+            log.info("Processing refund for payment intent: {} with amount: {}", paymentIntentId, amount);
+            
+            // Convert amount to cents
+            long amountInCents = amount.multiply(new BigDecimal(100)).longValue();
+            
+            RefundCreateParams params = RefundCreateParams.builder()
+                    .setPaymentIntent(paymentIntentId)
+                    .setAmount(amountInCents)
+                    .setReason(RefundCreateParams.Reason.REQUESTED_BY_CUSTOMER)
+                    .build();
 
-    private Object createLineItems(String orderId, long amount, String currency) {
-        // Helper method to create line items for Stripe
-        return new Object[]{
-            Map.of(
-                "price_data", Map.of(
-                    "currency", currency.toLowerCase(),
-                    "product_data", Map.of(
-                        "name", "Order #" + orderId
-                    ),
-                    "unit_amount", amount
-                ),
-                "quantity", 1
-            )
-        };
+            Refund refund = Refund.create(params);
+            
+            log.info("Refund processed successfully: {}", refund.getId());
+            
+            return RefundResult.builder()
+                    .refundId(refund.getId())
+                    .status(refund.getStatus())
+                    .amount(new BigDecimal(refund.getAmount()).divide(new BigDecimal(100))) // Convert back from cents
+                    .reason(refund.getReason())
+                    .build();
+                    
+        } catch (StripeException e) {
+            log.error("Failed to process refund for payment intent: {}", paymentIntentId, e);
+            throw new RuntimeException("Failed to process refund: " + e.getMessage(), e);
+        }
     }
 }

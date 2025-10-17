@@ -112,6 +112,7 @@ public class CartService {
     private Cart createNewCart(User user) {
         Cart cart = Cart.builder()
                 .user(user)
+                .items(new java.util.ArrayList<>())
                 .build();
         return cartRepository.save(cart);
     }

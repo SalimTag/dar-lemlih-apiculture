@@ -38,16 +38,28 @@ services:
       JWT_SECRET: change_me_super_secret_key_for_production_use_min_256_bits
       JWT_ACCESS_TTL_MIN: 15
       JWT_REFRESH_TTL_DAYS: 7
-      PAYMENT_PROVIDER: mock
+      PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-mock}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_your_stripe_secret_key_here}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-whsec_your_webhook_secret_here}
       SMTP_HOST: mailhog
       SMTP_PORT: 1025
       APP_BASE_URL: http://localhost:8080
-      WEB_BASE_URL: http://localhost:5173
+      WEB_BASE_URL: http://localhost
+      CORS_ALLOWED_ORIGINS: http://localhost,http://localhost:5173,http://localhost:3000
+      # LocalStack / AWS
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AWS_PUBLIC_ENDPOINT: http://localhost:4566
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      STORAGE_S3_ENABLED: "true"
+      S3_BUCKET: media
     ports:
       - "8080:8080"
     depends_on:
       db:
         condition: service_healthy
+      - localstack
     networks:
       - darlemlih-network
     volumes:
@@ -64,10 +76,11 @@ services:
       VITE_API_URL: http://localhost:8080
       VITE_APP_DEFAULT_LANG: fr
       VITE_APP_SUPPORTED_LANGS: fr,en,ar
-      VITE_PAYMENT_PROVIDER: mock
+      VITE_PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-mock}
+      VITE_STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-pk_test_your_stripe_publishable_key_here}
     ports:
-      # Map host port 5173 to container's nginx port 80
-      - "5173:80"
+      # Map host port 80 to container's nginx port 80
+      - "80:80"
     depends_on:
       - api
     networks:
@@ -101,6 +114,22 @@ services:
     networks:
       - darlemlih-network
 
+  # LocalStack for AWS emulation
+  localstack:
+    image: localstack/localstack:latest
+    container_name: darlemlih-localstack
+    restart: unless-stopped
+    environment:
+      - SERVICES=s3,sqs,dynamodb,lambda
+      - DEBUG=1
+      - AWS_REGION=us-east-1
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+    networks:
+      - darlemlih-network
+
   # Note: For development with hot-reload, use docker-compose.dev.yml instead
 
 networks:
@@ -111,4 +140,6 @@ volumes:
   db_data:
     driver: local
   web_node_modules:
+    driver: local
+  localstack_data:
     driver: local

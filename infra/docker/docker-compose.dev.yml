@@ -43,11 +43,21 @@ services:
       SMTP_PORT: 1025
       APP_BASE_URL: http://localhost:8080
       WEB_BASE_URL: http://localhost:5173
+      # LocalStack / AWS
+      AWS_ENDPOINT_URL: http://localstack:4566
+      AWS_PUBLIC_ENDPOINT: http://localhost:4566
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      STORAGE_S3_ENABLED: "true"
+      S3_BUCKET: media
     ports:
       - "8080:8080"
     depends_on:
       db:
         condition: service_healthy
+      localstack:
+        condition: service_started
     networks:
       - darlemlih-network
     volumes:
@@ -103,6 +113,22 @@ services:
     networks:
       - darlemlih-network
 
+  # LocalStack for AWS emulation
+  localstack:
+    image: localstack/localstack:latest
+    container_name: darlemlih-localstack
+    restart: unless-stopped
+    environment:
+      - SERVICES=s3,sqs,dynamodb,lambda
+      - DEBUG=1
+      - AWS_REGION=us-east-1
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+    networks:
+      - darlemlih-network
+
 networks:
   darlemlih-network:
     driver: bridge
@@ -111,4 +137,6 @@ volumes:
   db_data:
     driver: local
   web_node_modules:
+    driver: local
+  localstack_data:
     driver: local

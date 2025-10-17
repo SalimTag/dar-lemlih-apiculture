@@ -97,7 +97,17 @@ public class OrderService {
         // Clear cart
         cart.getItems().clear();
         cartRepository.save(cart);
-        
+
+        // Non-blocking emails (confirmation + admin notification)
+        try {
+            emailService.sendOrderConfirmationEmail(user.getEmail(), order.getOrderNumber());
+        } catch (Exception ignored) {}
+        try {
+            String adminEmail = System.getenv("APP_EMAIL_ADMIN");
+            String totalSummary = order.getTotal() + " " + order.getCurrency();
+            emailService.sendNewOrderAdminNotification(order.getOrderNumber(), user.getEmail(), totalSummary, adminEmail);
+        } catch (Exception ignored) {}
+
         return CheckoutResponse.builder()
                 .orderNumber(order.getOrderNumber())
                 .paymentUrl(session.getCheckoutUrl())
@@ -133,6 +143,7 @@ public class OrderService {
                 .paymentProvider(request.getPaymentMethod())
                 .shippingAddress(shippingAddress)
                 .notes(request.getNotes())
+                .items(new java.util.ArrayList<>())
                 .build();
         
         order = orderRepository.save(order);

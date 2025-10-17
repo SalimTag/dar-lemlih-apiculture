@@ -73,3 +73,32 @@ jobs:
   #     docker tag darlemlih/web:latest $DOCKERHUB_USER/darlemlih-web:latest
   #     docker push $DOCKERHUB_USER/darlemlih-api:latest
   #     docker push $DOCKERHUB_USER/darlemlih-web:latest
+
+  e2e:
+    name: E2E (Playwright)
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        working-directory: apps/web
+        run: |
+          npm ci
+          npx playwright install --with-deps
+      - name: Start stack
+        run: |
+          docker compose -f infra/docker/docker-compose.yml up -d
+          for i in {1..60}; do curl -fsS http://localhost:8080/actuator/health && break || sleep 2; done
+      - name: Run E2E
+        working-directory: apps/web
+        run: npx playwright test --reporter=line || true
+      - name: Upload Playwright traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report

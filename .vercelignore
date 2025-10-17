@@ -1,0 +1,8 @@
+# Ignore non-web parts of the monorepo for Vercel uploads
+apps/api/
+infra/
+node_modules/
+**/node_modules/
+**/*.log
+.git/
+**/.DS_Store

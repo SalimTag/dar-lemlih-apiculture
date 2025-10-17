@@ -49,4 +49,17 @@ public class EmailService {
         
         mailSender.send(message);
     }
+
+    public void sendNewOrderAdminNotification(String orderNumber, String customerEmail, String totalSummary, String adminEmail) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo((adminEmail != null && !adminEmail.isBlank()) ? adminEmail : fromEmail);
+        message.setSubject("[New Order] #" + orderNumber + " - " + customerEmail);
+        message.setText("Nouvelle commande reçue\n\n" +
+                "Commande: #" + orderNumber + "\n" +
+                "Client: " + customerEmail + "\n" +
+                "Total: " + totalSummary + "\n\n" +
+                "Dashboard: " + webBaseUrl + "/admin");
+        mailSender.send(message);
+    }
 }
