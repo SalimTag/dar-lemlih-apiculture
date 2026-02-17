@@ -661,52 +661,242 @@ This application implements multiple layers of security:
 
 ### System Architecture
 
-```
-┌─────────────┐         ┌──────────────┐         ┌──────────────┐
-│   Browser   │────────▶│   Next.js    │────────▶│  Spring Boot │
-│  (Client)   │◀────────│   Frontend   │◀────────│   Backend    │
-└─────────────┘         └──────────────┘         └──────────────┘
-                               │                          │
-                               │                          │
-                               ▼                          ▼
-                        ┌──────────────┐         ┌──────────────┐
-                        │  Vercel CDN  │         │    MySQL     │
-                        │   (Static)   │         │  Database    │
-                        └──────────────┘         └──────────────┘
-                                                          │
-                                                          ▼
-                                                  ┌──────────────┐
-                                                  │  AWS S3 /    │
-                                                  │  LocalStack  │
-                                                  └──────────────┘
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        Browser[Web Browser]
+        Mobile[Mobile Device]
+    end
+    
+    subgraph "Frontend Layer"
+        NextJS[Next.js App<br/>React + TypeScript]
+        CDN[Vercel CDN<br/>Static Assets]
+    end
+    
+    subgraph "Backend Layer"
+        API[Spring Boot API<br/>REST + JWT]
+        Auth[Authentication<br/>Service]
+    end
+    
+    subgraph "Data Layer"
+        MySQL[(MySQL Database)]
+        S3[AWS S3 / LocalStack<br/>Media Storage]
+        Cache[Redis Cache<br/>Optional]
+    end
+    
+    subgraph "External Services"
+        Email[SMTP Email<br/>Service]
+        Payment[Payment Gateway<br/>Stripe/Mock]
+    end
+    
+    Browser --> NextJS
+    Mobile --> NextJS
+    NextJS --> CDN
+    NextJS --> API
+    API --> Auth
+    API --> MySQL
+    API --> S3
+    API --> Cache
+    API --> Email
+    API --> Payment
+    
+    style NextJS fill:#61dafb
+    style API fill:#6db33f
+    style MySQL fill:#00758f
+    style S3 fill:#ff9900
 ```
 
-### Backend Architecture
+### Backend Architecture (Layered)
 
-```
-Controller Layer (REST API)
-    ↓
-Service Layer (Business Logic)
-    ↓
-Repository Layer (Data Access)
-    ↓
-Database (MySQL)
+```mermaid
+graph TB
+    subgraph "Presentation Layer"
+        Controller[Controllers<br/>@RestController]
+        DTOs[DTOs<br/>Request/Response]
+    end
+    
+    subgraph "Business Layer"
+        Service[Services<br/>@Service]
+        Validation[Validation<br/>Business Rules]
+    end
+    
+    subgraph "Persistence Layer"
+        Repository[Repositories<br/>@Repository]
+        Entity[Entities<br/>@Entity]
+    end
+    
+    subgraph "Cross-Cutting"
+        Security[Security<br/>JWT Filter]
+        Exception[Exception<br/>Handler]
+        Logging[Logging<br/>Aspect]
+    end
+    
+    Controller --> DTOs
+    Controller --> Service
+    Service --> Validation
+    Service --> Repository
+    Repository --> Entity
+    Entity --> MySQL[(MySQL DB)]
+    
+    Security -.-> Controller
+    Exception -.-> Controller
+    Logging -.-> Service
+    
+    style Controller fill:#6db33f
+    style Service fill:#68bc71
+    style Repository fill:#86c571
+    style MySQL fill:#00758f
 ```
 
-### Frontend Architecture
+### Authentication Flow
 
+```mermaid
+sequenceDiagram
+    participant Client as Client Browser
+    participant API as Spring Boot API
+    participant DB as MySQL Database
+    
+    Note over Client,DB: User Login
+    Client->>+API: POST /api/auth/login<br/>{email, password}
+    API->>+DB: Query user by email
+    DB-->>-API: User data + hashed password
+    API->>API: Verify BCrypt password
+    API->>API: Generate JWT tokens<br/>(access + refresh)
+    API-->>-Client: {accessToken, refreshToken, user}
+    
+    Note over Client,DB: Authenticated Request
+    Client->>+API: GET /api/orders<br/>Authorization: Bearer {accessToken}
+    API->>API: Validate JWT signature<br/>Check expiration
+    API->>+DB: Query orders for user
+    DB-->>-API: Order data
+    API-->>-Client: {orders: [...]}
+    
+    Note over Client,DB: Token Refresh
+    Client->>+API: POST /api/auth/refresh<br/>{refreshToken}
+    API->>API: Validate refresh token
+    API->>API: Generate new access token
+    API->>API: Rotate refresh token
+    API-->>-Client: {accessToken, refreshToken}
+    
+    style Client fill:#61dafb
+    style API fill:#6db33f
+    style DB fill:#00758f
 ```
-Next.js App Router
-    │
-    ├── Pages (Routes)
-    │       ↓
-    ├── Components (UI)
-    │       ↓
-    ├── Stores (Zustand State)
-    │       ↓
-    └── API Client (HTTP)
-            ↓
-        Spring Boot API
+
+### Database Schema (Simplified)
+
+```mermaid
+erDiagram
+    USER ||--o{ ORDER : places
+    USER {
+        bigint id PK
+        string email UK
+        string password
+        string first_name
+        string last_name
+        enum role
+        datetime created_at
+    }
+    
+    ORDER ||--|{ ORDER_ITEM : contains
+    ORDER {
+        bigint id PK
+        bigint user_id FK
+        decimal total_amount
+        enum status
+        string shipping_address
+        datetime created_at
+    }
+    
+    ORDER_ITEM }o--|| PRODUCT : references
+    ORDER_ITEM {
+        bigint id PK
+        bigint order_id FK
+        bigint product_id FK
+        int quantity
+        decimal unit_price
+    }
+    
+    PRODUCT }o--|| CATEGORY : belongs_to
+    PRODUCT {
+        bigint id PK
+        bigint category_id FK
+        string name
+        text description
+        decimal price
+        int stock_quantity
+        string image_url
+        boolean active
+    }
+    
+    CATEGORY {
+        bigint id PK
+        string name
+        string slug UK
+        text description
+        int display_order
+    }
+    
+    USER ||--o{ CART_ITEM : has
+    CART_ITEM }o--|| PRODUCT : references
+    CART_ITEM {
+        bigint id PK
+        bigint user_id FK
+        bigint product_id FK
+        int quantity
+        datetime created_at
+    }
+```
+
+### Deployment Architecture
+
+```mermaid
+graph TB
+    subgraph "Production Environment"
+        subgraph "Frontend - Vercel"
+            NextApp[Next.js App]
+            VercelCDN[Vercel Edge Network]
+        end
+        
+        subgraph "Backend - Cloud VPS/Railway"
+            SpringApp[Spring Boot<br/>Docker Container]
+            NginxLB[Nginx<br/>Load Balancer]
+        end
+        
+        subgraph "Database - Managed Service"
+            MySQLDB[(MySQL 8<br/>Managed Instance)]
+            MySQLReplica[(Read Replica)]
+        end
+        
+        subgraph "Storage - AWS"
+            S3Bucket[S3 Bucket<br/>Media Files]
+            CloudFront[CloudFront CDN]
+        end
+        
+        subgraph "Monitoring & Logging"
+            Logs[Centralized Logs]
+            Metrics[Application Metrics]
+            Alerts[Alert System]
+        end
+    end
+    
+    Users[Users] --> VercelCDN
+    VercelCDN --> NextApp
+    NextApp --> NginxLB
+    NginxLB --> SpringApp
+    SpringApp --> MySQLDB
+    MySQLDB --> MySQLReplica
+    SpringApp --> S3Bucket
+    S3Bucket --> CloudFront
+    
+    SpringApp --> Logs
+    SpringApp --> Metrics
+    Metrics --> Alerts
+    
+    style NextApp fill:#61dafb
+    style SpringApp fill:#6db33f
+    style MySQLDB fill:#00758f
+    style S3Bucket fill:#ff9900
 ```
 
 ## 🌍 Environment Variables

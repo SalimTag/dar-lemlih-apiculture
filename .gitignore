@@ -3,6 +3,9 @@
 apps/api/target/
 apps/api/logs/
 apps/web/dist/
+apps/web/.next/
+apps/web/out/
+apps/web/build/
 apps/web/node_modules/
 *.log
 
@@ -10,5 +13,61 @@ apps/web/node_modules/
 .env
 *.env
 *.env.local
+*.env.production
+*.env.development
 apps/*/.env
+apps/*/.env.local
+apps/*/.env.production
+apps/*/.env.development
 .vercel
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+*.swn
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Package manager files
+node_modules/
+package-lock.json.bak
+yarn.lock
+pnpm-lock.yaml
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Maven wrapper
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# Database
+*.db
+*.sqlite
+
+# Uploads (local storage)
+uploads/
+apps/api/uploads/
+
+# Docker volumes
+data/
+volumes/
