@@ -14,6 +14,14 @@
 
 [Features](#-features) • [Demo](#-demo) • [Tech Stack](#-tech-stack) • [Quick Start](#-quick-start) • [Documentation](#-documentation) • [Contributing](#-contributing)
 
+---
+
+**📚 Complete Documentation Available:**
+[API Reference](docs/API.md) •
+[Development Guide](docs/DEVELOPMENT.md) •
+[Contributing](CONTRIBUTING.md) •
+[Changelog](CHANGELOG.md)
+
 </div>
 
 ---
@@ -985,18 +993,27 @@ VITE_ANALYTICS_ID=                      # Analytics tracking ID
 
 ## 📚 Documentation
 
-### Additional Resources
+### Essential Documentation
 
-- **[CONTRIBUTING.md](CONTRIBUTING.md)**: Guidelines for contributing to the project
-- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)**: Community guidelines and expectations
-- **[CHANGELOG.md](CHANGELOG.md)**: Version history and release notes
-- **[DEPLOYMENT.md](DEPLOYMENT.md)**: Detailed deployment instructions
-- **[API Documentation](http://localhost:8080/swagger-ui.html)**: Interactive API docs (when running)
+- **[Getting Started](README.md#-quick-start)**: Quick start guide to get up and running
+- **[API Documentation](docs/API.md)**: Complete API reference with examples
+- **[Development Guide](docs/DEVELOPMENT.md)**: Detailed guide for developers
+- **[Contributing Guidelines](CONTRIBUTING.md)**: How to contribute to the project
+- **[Code of Conduct](CODE_OF_CONDUCT.md)**: Community guidelines and expectations
+- **[Changelog](CHANGELOG.md)**: Version history and release notes
+- **[Deployment Guide](DEPLOYMENT.md)**: Production deployment instructions
 
-### Architecture Documentation
+### Interactive Documentation
 
-- **Frontend**: See [apps/web/docs/architecture.md](apps/web/docs/architecture.md)
-- **Backend**: Spring Boot follows standard layered architecture (Controller → Service → Repository)
+- **[Swagger UI](http://localhost:8080/swagger-ui.html)**: Interactive API docs (when running locally)
+- **[OpenAPI Spec](http://localhost:8080/v3/api-docs)**: OpenAPI 3.0 specification
+
+### Architecture & Design
+
+- **System Architecture**: See [Architecture section](#-architecture)
+- **Database Schema**: See [Database Schema diagram](#-architecture)
+- **Authentication Flow**: See [JWT Authentication Flow](#-architecture)
+- **Frontend Architecture**: [apps/web/docs/architecture.md](apps/web/docs/architecture.md)
 
 ### Learning Resources
 
