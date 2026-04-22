@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Leaf, ShieldCheck, Recycle } from '@lucide/react';
+import { Leaf, ShieldCheck, Recycle } from 'lucide-react';
 
 const ICONS = {
   atlas: Leaf,

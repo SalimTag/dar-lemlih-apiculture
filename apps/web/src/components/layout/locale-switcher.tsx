@@ -1,8 +1,8 @@
 'use client';
 
-import { Globe2 } from '@lucide/react';
+import { Globe2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
-import { usePathname, useRouter } from 'next-intl/client';
+import { usePathname, useRouter } from '@/i18n/routing';
 import { locales, type Locale } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';

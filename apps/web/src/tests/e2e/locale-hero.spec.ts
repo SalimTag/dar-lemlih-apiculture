@@ -5,15 +5,15 @@ test.describe('Dar Lemlih storefront smoke tests', () => {
     await page.goto('/', { waitUntil: 'networkidle' });
     await expect(page).toHaveURL(/\/fr$/);
 
-    await expect(page.getByRole('heading', { name: /miel marocain/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Un miel marocain rare, façonné avec révérence/i })).toBeVisible();
 
-    const heroImage = page.locator('img[alt*="Dar Lemlih"]');
+    const heroImage = page.locator('img[alt*="Pots de miel Dar Lemlih"]');
     await expect(heroImage).toBeVisible();
     const classList = await heroImage.evaluate(node => node.getAttribute('class') ?? '');
     expect(classList).not.toContain('blur');
 
     await page.getByRole('button', { name: /Lang|Language/i }).click();
-    await page.getByRole('button', { name: /^EN$/ }).click();
+    await page.getByRole('button', { name: "en" }).click();
 
     await expect(page).toHaveURL(/\/en$/);
     await expect(page.getByRole('heading', { name: /rare moroccan honey/i })).toBeVisible();

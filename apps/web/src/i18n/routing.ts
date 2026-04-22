@@ -1,3 +1,5 @@
+import { createSharedPathnamesNavigation } from 'next-intl/navigation';
+
 export const locales = ['ar', 'fr', 'en'] as const;
 
 export type Locale = (typeof locales)[number];
@@ -10,3 +12,4 @@ export function isRTL(locale: Locale) {
   return rtlLocales.has(locale);
 }
 
+export const { Link, redirect, usePathname, useRouter } = createSharedPathnamesNavigation({ locales });

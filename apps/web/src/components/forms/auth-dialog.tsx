@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter } from 'next-intl/client';
+import { useRouter } from '@/i18n/routing';
 import { useSearchParams } from 'next/navigation';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
