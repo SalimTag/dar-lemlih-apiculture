@@ -9,20 +9,21 @@ import { Steps } from '@/components/blocks/steps';
 import { Section } from '@/components/blocks/section';
 import { Button } from '@/components/ui/button';
 
-export async function generateMetadata({ params }: { params: { locale: Locale } }): Promise<Metadata> {
-  const t = await getTranslations({ locale: params.locale, namespace: 'hero' });
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'hero' });
 
   return {
     title: t('title'),
     description: t('subtitle'),
     alternates: {
-      canonical: `https://www.dar-lemlih.com/${params.locale}`
+      canonical: `https://www.dar-lemlih.com/${locale}`
     }
   };
 }
 
-export default async function LocaleHomePage({ params }: { params: { locale: Locale } }) {
-  const { locale } = params;
+export default async function LocaleHomePage({ params }: { params: Promise<{ locale: Locale }> }) {
+  const { locale } = await params;
   const tCta = await getTranslations({ locale, namespace: 'cta' });
   const tCommon = await getTranslations({ locale, namespace: 'common' });
 

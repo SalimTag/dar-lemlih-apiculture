@@ -2,9 +2,10 @@ import { Section } from '@/components/blocks/section';
 import type { Locale } from '@/i18n/routing';
 import { getTranslations } from 'next-intl/server';
 
-export default async function BlogPage({ params }: { params: { locale: Locale } }) {
-  const tNav = await getTranslations({ locale: params.locale, namespace: 'nav' });
-  const tCommon = await getTranslations({ locale: params.locale, namespace: 'common' });
+export default async function BlogPage({ params }: { params: Promise<{ locale: Locale }> }) {
+  const { locale } = await params;
+  const tNav = await getTranslations({ locale, namespace: 'nav' });
+  const tCommon = await getTranslations({ locale, namespace: 'common' });
 
   return (
     <Section>
