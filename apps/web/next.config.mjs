@@ -1,12 +1,12 @@
 import createNextIntlPlugin from 'next-intl/plugin';
-import { withContentlayer } from 'next-contentlayer';
+import { withContentlayer } from 'next-contentlayer2';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig = {
   experimental: {
     typedRoutes: true,
-    optimizePackageImports: ['@lucide/react', 'framer-motion']
+    optimizePackageImports: ['lucide-react', 'framer-motion']
   },
   images: {
     remotePatterns: [

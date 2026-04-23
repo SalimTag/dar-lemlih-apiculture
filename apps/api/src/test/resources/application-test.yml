@@ -1,0 +1,51 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:darlemlih;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: false
+  mail:
+    host: localhost
+    port: 1025
+
+server:
+  port: 0
+
+app:
+  base-url: http://localhost:8080
+  web-base-url: http://localhost:3000
+  mail:
+    from: noreply@darlemlih.ma
+    from-name: Dar Lemlih Apiculture
+    admin: admin@darlemlih.ma
+
+jwt:
+  secret: change_me_dev_secret_change_in_prod_please_12345678901234567890
+  access-token-expiration: 15
+  refresh-token-expiration: 7
+
+payment:
+  provider: mock
+  mock:
+    enabled: true
+
+aws:
+  endpoint: http://localhost:4566
+  public-endpoint: http://localhost:4566
+  region: us-east-1
+  access-key: test
+  secret-key: test
+  s3:
+    enabled: false
+    bucket: media

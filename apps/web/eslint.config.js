@@ -16,7 +16,7 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['.next/**', 'dist/**', 'node_modules/**', 'contentlayer/generated/**']
+    ignores: ['.next/**', 'dist/**', 'node_modules/**', '.contentlayer/**']
   },
   ...compat.config({
     extends: ['next/core-web-vitals', 'next/typescript']

@@ -1,6 +1,6 @@
 'use client';
 
-import { Globe2 } from '@lucide/react';
+import { Globe2 } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next-intl/client';
 import { locales, type Locale } from '@/i18n/routing';

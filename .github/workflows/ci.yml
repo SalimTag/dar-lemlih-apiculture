@@ -43,7 +43,7 @@ jobs:
           cache-dependency-path: apps/web/package-lock.json
       - name: Install deps
         working-directory: apps/web
-        run: npm ci || npm install
+        run: npm ci --legacy-peer-deps
       - name: Lint
         working-directory: apps/web
         run: npm run lint
@@ -87,7 +87,7 @@ jobs:
       - name: Install Playwright
         working-directory: apps/web
         run: |
-          npm ci
+          npm ci --legacy-peer-deps
           npx playwright install --with-deps
       - name: Start stack
         run: |

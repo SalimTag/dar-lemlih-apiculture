@@ -1,4 +1,4 @@
-import { makeSource, defineDocumentType } from 'contentlayer/source-files';
+import { makeSource, defineDocumentType } from 'contentlayer2/source-files';
 
 const Article = defineDocumentType(() => ({
   name: 'Article',
