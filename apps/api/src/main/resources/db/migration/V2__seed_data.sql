@@ -46,8 +46,8 @@ INSERT INTO product_images (product_id, image_url) VALUES
 (4, '/images/products/pollen-abeille-1.jpg'),
 (5, '/images/products/miel-multifloral-1.jpg');
 
--- Insert users (passwords will be BCrypt hashed: Admin!234 and Customer!234)
--- Note: These are example hashes, the actual application should generate proper BCrypt hashes
+-- Insert seed users (BCrypt hashed passwords — set via SEED_DEFAULT_PASSWORD env var)
+-- Note: These hashes are for development seeding only. Change credentials before production.
 INSERT INTO users (name, email, password, phone, role, enabled, email_verified) VALUES
 ('Admin User', 'admin@darlemlih.ma', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQyCqXMfJVgPEtuDSqGaQ4mBm', '+212600000001', 'ADMIN', true, true),
 ('Customer User', 'customer@darlemlih.ma', '$2a$12$SME34mBRdqO3V6z8Xz7gDuvx1j8xJ9Z7qGPwLXXYJxXCj7qrJ3RpO', '+212600000002', 'CUSTOMER', true, true),

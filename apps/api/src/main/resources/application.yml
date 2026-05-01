@@ -1,14 +1,14 @@
 spring:
   application:
-    name: dar-lemlih-apiculture-api
+    name: atlas-nectar-api
   
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
   
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/darlemlih?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC}
-    username: ${DB_USERNAME:dar}
-    password: ${DB_PASSWORD:lemlih}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-timeout: 20000
@@ -65,7 +65,7 @@ server:
 
 # JWT Configuration
 jwt:
-  secret: ${JWT_SECRET:change_me_super_secret_key_for_production_use_min_256_bits}
+  secret: ${JWT_SECRET:}
   access-token-expiration: ${JWT_ACCESS_TTL_MIN:15}
   refresh-token-expiration: ${JWT_REFRESH_TTL_DAYS:7}
 
@@ -73,8 +73,8 @@ jwt:
 payment:
   provider: ${PAYMENT_PROVIDER:mock}
   stripe:
-    secret-key: ${STRIPE_SECRET_KEY:sk_test_your_stripe_secret_key_here}
-    webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec_your_webhook_secret_here}
+    secret-key: ${STRIPE_SECRET_KEY:}
+    webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
     success-url: ${PAYMENT_SUCCESS_URL:${app.web-base-url}/payment/success}
     cancel-url: ${PAYMENT_CANCEL_URL:${app.web-base-url}/payment/cancel}
   mock:
@@ -109,8 +109,8 @@ aws:
   endpoint: ${AWS_ENDPOINT_URL:http://localhost:4566}
   public-endpoint: ${AWS_PUBLIC_ENDPOINT:${aws.endpoint}}
   region: ${AWS_REGION:us-east-1}
-  access-key: ${AWS_ACCESS_KEY_ID:test}
-  secret-key: ${AWS_SECRET_ACCESS_KEY:test}
+  access-key: ${AWS_ACCESS_KEY_ID:}
+  secret-key: ${AWS_SECRET_ACCESS_KEY:}
   s3:
     enabled: ${STORAGE_S3_ENABLED:true}
     bucket: ${S3_BUCKET:media}

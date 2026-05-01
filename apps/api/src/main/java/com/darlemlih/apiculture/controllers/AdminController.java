@@ -45,6 +45,11 @@ public class AdminController {
     private final FileStorageService fileStorageService;
     private final UploadProperties uploadProperties;
 
+    private String getSeedPassword() {
+        String envPassword = System.getenv("SEED_DEFAULT_PASSWORD");
+        return envPassword != null ? envPassword : "ChangeMe!2025";
+    }
+
     @GetMapping("/dashboard")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DashboardDto> getDashboard() {
@@ -64,16 +69,16 @@ public class AdminController {
         
         // Reset admin password
         userRepository.findByEmail("admin@darlemlih.ma").ifPresent(user -> {
-            user.setPassword(passwordEncoder.encode("Admin!234"));
+            user.setPassword(passwordEncoder.encode(getSeedPassword()));
             userRepository.save(user);
-            result.put("admin", "Password reset to Admin!234");
+            result.put("admin", "Password reset successfully");
         });
         
         // Reset customer password
         userRepository.findByEmail("customer@darlemlih.ma").ifPresent(user -> {
-            user.setPassword(passwordEncoder.encode("Customer!234"));
+            user.setPassword(passwordEncoder.encode(getSeedPassword()));
             userRepository.save(user);
-            result.put("customer", "Password reset to Customer!234");
+            result.put("customer", "Password reset successfully");
         });
         
         // Create users if they don't exist
@@ -81,28 +86,28 @@ public class AdminController {
             User admin = User.builder()
                     .name("Admin User")
                     .email("admin@darlemlih.ma")
-                    .password(passwordEncoder.encode("Admin!234"))
+                    .password(passwordEncoder.encode(getSeedPassword()))
                     .phone("+212600000001")
                     .role(UserRole.ADMIN)
                     .enabled(true)
                     .emailVerified(true)
                     .build();
             userRepository.save(admin);
-            result.put("admin", "Admin user created with password Admin!234");
+            result.put("admin", "Admin user created");
         }
         
         if (!userRepository.existsByEmail("customer@darlemlih.ma")) {
             User customer = User.builder()
                     .name("Customer User")
                     .email("customer@darlemlih.ma")
-                    .password(passwordEncoder.encode("Customer!234"))
+                    .password(passwordEncoder.encode(getSeedPassword()))
                     .phone("+212600000002")
                     .role(UserRole.CUSTOMER)
                     .enabled(true)
                     .emailVerified(true)
                     .build();
             userRepository.save(customer);
-            result.put("customer", "Customer user created with password Customer!234");
+            result.put("customer", "Customer user created");
         }
         
         result.put("message", "Passwords reset successfully");

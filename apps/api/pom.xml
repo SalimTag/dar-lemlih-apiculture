@@ -11,10 +11,10 @@
     </parent>
     
     <groupId>com.darlemlih</groupId>
-    <artifactId>apiculture-api</artifactId>
+    <artifactId>atlas-nectar-api</artifactId>
     <version>1.0.0</version>
-    <name>apiculture-api</name>
-    <description>E-commerce API for Dar Lemlih Apiculture</description>
+    <name>atlas-nectar-api</name>
+    <description>E-commerce API for Atlas Nectar</description>
     
     <properties>
         <java.version>21</java.version>
