@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
 import { Section } from '@/components/blocks/section';
@@ -9,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 const BLOG_POSTS = [
   {
     id: 1,
+    slug: 'atlas-thyme-honey-tagine',
     image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=800&q=80',
     category: 'Recipe',
     title: 'Atlas Thyme Honey Glazed Tagine',
@@ -17,6 +19,7 @@ const BLOG_POSTS = [
   },
   {
     id: 2,
+    slug: 'understanding-moroccan-honey-terroir',
     image: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?auto=format&fit=crop&w=800&q=80',
     category: 'Terroir',
     title: 'Understanding Moroccan Honey Terroir',
@@ -25,6 +28,7 @@ const BLOG_POSTS = [
   },
   {
     id: 3,
+    slug: 'morning-honey-ritual',
     image: 'https://images.unsplash.com/photo-1471943311424-646960669fbc?auto=format&fit=crop&w=800&q=80',
     category: 'Wellness',
     title: 'Morning Honey Ritual for Energy',
@@ -63,7 +67,8 @@ export default async function BlogPage({ params }: { params: { locale: Locale } 
       <Section background="warm">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {BLOG_POSTS.map((post) => (
-            <Card key={post.id} className="group flex flex-col overflow-hidden border-white/15 p-0">
+            <Link key={post.id} href={`/${params.locale}/blog/${post.slug}`}>
+            <Card className="group flex flex-col overflow-hidden border-white/15 p-0 cursor-pointer">
               {/* Image */}
               <div className="relative aspect-[16/10] overflow-hidden">
                 <Image
@@ -101,6 +106,7 @@ export default async function BlogPage({ params }: { params: { locale: Locale } 
                 </span>
               </div>
             </Card>
+            </Link>
           ))}
         </div>
 

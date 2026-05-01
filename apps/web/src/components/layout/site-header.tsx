@@ -11,6 +11,7 @@ import { ThemeToggle } from './theme-toggle';
 import type { Locale } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { AuthDialog } from '@/components/forms/auth-dialog';
+import { useCartStore } from '@/lib/store/cart';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS: Array<{ key: string; href: string }> = [
@@ -25,6 +26,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
   const t = useTranslations('nav');
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const totalItems = useCartStore((s) => s.totalItems());
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -92,8 +94,15 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             <ThemeToggle />
 
             {/* Cart button */}
-            <Button variant="ghost" size="icon" className="rounded-full" aria-label={t('cart')}>
-              <ShoppingBag className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="relative rounded-full" aria-label={t('cart')} asChild>
+              <Link href={`/${locale}/cart`}>
+                <ShoppingBag className="h-5 w-5" />
+                {totalItems > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] font-bold text-white">
+                    {totalItems > 9 ? '9+' : totalItems}
+                  </span>
+                )}
+              </Link>
             </Button>
 
             {/* Auth (desktop) */}

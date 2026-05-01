@@ -79,11 +79,13 @@
       "propolis": "Propolis"
     },
     "addToCart": "Ajouter au panier",
+    "addedToCart": "Ajouté au panier",
     "viewDetails": "Voir les détails",
     "outOfStock": "Rupture de stock",
     "from": "À partir de",
     "weight": "Poids",
-    "origin": "Origine"
+    "origin": "Origine",
+    "backToCollection": "Retour à la collection"
   },
   "story": {
     "title": "Notre Histoire",
@@ -131,6 +133,7 @@
     "title": "Recettes & Journal",
     "subtitle": "Recettes de saison, rituels et récits de provenance depuis l'Atlas.",
     "readMore": "Lire la suite",
+    "backToBlog": "Retour au journal",
     "comingSoon": "De nouvelles histoires mijotent. Revenez bientôt pour des recettes saisonnières, des rituels bien-être et des chroniques derrière la ruche."
   },
   "footer": {
@@ -172,5 +175,91 @@
     "storyPlaceholder": "Nous préparons un récit immersif sur l'héritage de la famille Lemlih, les terroirs et l'apiculture régénérative.",
     "blogPlaceholder": "Des recettes de saison, rituels et récits de provenance seront publiés ici très bientôt.",
     "contactPlaceholder": "Écrivez à concierge@dar-lemlih.com pour des dégustations sur-mesure, des partenariats retail et des collaborations hôtelières."
+  },
+  "cart": {
+    "title": "Votre panier",
+    "empty": "Votre panier est vide",
+    "emptyDescription": "Ajoutez des produits à votre panier pour commencer.",
+    "item": "article",
+    "items": "articles",
+    "subtotal": "Sous-total",
+    "total": "Total",
+    "checkout": "Commander",
+    "continueShopping": "Continuer les achats",
+    "remove": "Retirer"
+  },
+  "checkout": {
+    "title": "Finaliser la commande",
+    "emptyCart": "Votre panier est vide",
+    "continueShopping": "Continuer les achats",
+    "shippingAddress": "Adresse de livraison",
+    "paymentMethod": "Mode de paiement",
+    "cashOnDelivery": "Paiement à la livraison",
+    "cashOnDeliveryNote": "Vous payez en espèces lors de la livraison.",
+    "notes": "Notes de commande",
+    "notesPlaceholder": "Instructions spéciales, code d'accès, etc.",
+    "orderSummary": "Récapitulatif",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "total": "Total",
+    "placeOrder": "Passer la commande",
+    "placing": "Traitement...",
+    "orderPlaced": "Commande confirmée !",
+    "fields": {
+      "name": "Nom complet",
+      "phone": "Téléphone",
+      "line1": "Adresse",
+      "line2": "Complément d'adresse",
+      "city": "Ville",
+      "region": "Région",
+      "postalCode": "Code postal",
+      "country": "Pays"
+    }
+  },
+  "orders": {
+    "title": "Mes commandes",
+    "subtitle": "Retrouvez l'historique de vos commandes.",
+    "noOrders": "Vous n'avez pas encore passé de commande.",
+    "continueShopping": "Explorer la collection",
+    "confirmationTitle": "Commande confirmée !",
+    "confirmationSubtitle": "Merci pour votre commande. Vous recevrez un email de confirmation très bientôt.",
+    "orderNumber": "Numéro de commande",
+    "viewOrders": "Voir mes commandes"
+  },
+  "account": {
+    "title": "Mon compte",
+    "myOrders": "Mes commandes",
+    "myOrdersDescription": "Historique et suivi de vos commandes"
+  },
+  "admin": {
+    "title": "Administration",
+    "dashboard": "Tableau de bord",
+    "products": "Produits",
+    "orders": "Commandes",
+    "totalOrders": "Commandes totales",
+    "pendingOrders": "En attente",
+    "totalCustomers": "Clients",
+    "totalProducts": "Produits",
+    "product": "Produit",
+    "price": "Prix",
+    "stock": "Stock",
+    "status": "Statut",
+    "actions": "Actions",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "addProduct": "Ajouter un produit",
+    "noProducts": "Aucun produit trouvé.",
+    "noOrders": "Aucune commande trouvée.",
+    "orderNumber": "N° commande",
+    "total": "Total",
+    "orderStatus": "Statut",
+    "date": "Date",
+    "confirmDelete": "Supprimer ce produit ?",
+    "productDeleted": "Produit supprimé.",
+    "deleteFailed": "Échec de la suppression.",
+    "statusUpdated": "Statut mis à jour.",
+    "updateFailed": "Échec de la mise à jour.",
+    "editComingSoon": "L'édition sera disponible prochainement.",
+    "createProductComingSoon": "Création produit : bientôt disponible."
   }
 }

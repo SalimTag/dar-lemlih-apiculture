@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ShoppingBag, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { AnimateOnScroll } from '@/components/ui/animate-on-scroll';
+import { useCartStore } from '@/lib/store/cart';
 import { cn } from '@/lib/utils';
 
 // Mock products — in production these come from the Spring Boot API
@@ -90,6 +92,7 @@ const FILTERS = ['all', 'honey', 'pollen', 'propolis'] as const;
 export function ProductCatalog({ locale }: { locale: string }) {
   const t = useTranslations('products');
   const [activeFilter, setActiveFilter] = useState<string>('all');
+  const addItem = useCartStore((s) => s.addItem);
 
   const filtered = activeFilter === 'all'
     ? PRODUCTS
@@ -121,7 +124,7 @@ export function ProductCatalog({ locale }: { locale: string }) {
           <AnimateOnScroll key={product.id} animation="fade-up" delay={index * 80}>
             <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/15 bg-white/60 shadow-glass backdrop-blur-sm transition-all duration-500 hover:shadow-elevated hover:-translate-y-1 dark:border-white/8 dark:bg-charcoal-900/50">
               {/* Image */}
-              <div className="relative aspect-[4/5] overflow-hidden">
+              <Link href={`/${locale}/products/${product.id}`} className="relative block aspect-[4/5] overflow-hidden">
                 <Image
                   src={product.image}
                   alt={product.nameKey}
@@ -142,12 +145,27 @@ export function ProductCatalog({ locale }: { locale: string }) {
 
                 {/* Quick add button */}
                 <div className="absolute bottom-4 end-4 opacity-0 transition-all duration-300 group-hover:opacity-100">
-                  <Button size="icon" className="h-12 w-12 rounded-full shadow-elevated">
+                  <Button
+                    size="icon"
+                    className="h-12 w-12 rounded-full shadow-elevated"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      addItem({
+                        id: product.id,
+                        slug: product.id,
+                        name: product.nameKey,
+                        price: product.price,
+                        image: product.image,
+                        weight: product.weight,
+                        origin: product.origin,
+                      });
+                    }}
+                  >
                     <ShoppingBag className="h-5 w-5" />
                     <span className="sr-only">{t('addToCart')}</span>
                   </Button>
                 </div>
-              </div>
+              </Link>
 
               {/* Content */}
               <div className="flex flex-1 flex-col gap-3 p-5">

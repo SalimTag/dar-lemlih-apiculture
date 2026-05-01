@@ -79,11 +79,13 @@
       "propolis": "Propolis"
     },
     "addToCart": "Add to cart",
+    "addedToCart": "Added to cart",
     "viewDetails": "View details",
     "outOfStock": "Out of stock",
     "from": "From",
     "weight": "Weight",
-    "origin": "Origin"
+    "origin": "Origin",
+    "backToCollection": "Back to collection"
   },
   "story": {
     "title": "Our Story",
@@ -131,6 +133,7 @@
     "title": "Recipes & Journal",
     "subtitle": "Seasonal recipes, rituals, and provenance stories from the Atlas.",
     "readMore": "Read more",
+    "backToBlog": "Back to journal",
     "comingSoon": "New stories are brewing. Check back soon for seasonal recipes, wellness rituals, and behind-the-hive dispatches."
   },
   "footer": {
@@ -172,5 +175,91 @@
     "storyPlaceholder": "An immersive narrative about the Lemlih family legacy, terroirs, and regenerative beekeeping is in preparation.",
     "blogPlaceholder": "Seasonal recipes, rituals, and provenance stories will appear here shortly.",
     "contactPlaceholder": "Write to concierge@dar-lemlih.com for bespoke tastings, retail partnerships, and hospitality collaborations."
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "emptyDescription": "Add products to your cart to get started.",
+    "item": "item",
+    "items": "items",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "checkout": "Checkout",
+    "continueShopping": "Continue shopping",
+    "remove": "Remove"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "emptyCart": "Your cart is empty",
+    "continueShopping": "Continue shopping",
+    "shippingAddress": "Shipping address",
+    "paymentMethod": "Payment method",
+    "cashOnDelivery": "Pay on delivery",
+    "cashOnDeliveryNote": "You pay in cash upon delivery.",
+    "notes": "Order notes",
+    "notesPlaceholder": "Special instructions, access code, etc.",
+    "orderSummary": "Order summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "total": "Total",
+    "placeOrder": "Place order",
+    "placing": "Processing...",
+    "orderPlaced": "Order confirmed!",
+    "fields": {
+      "name": "Full name",
+      "phone": "Phone",
+      "line1": "Address",
+      "line2": "Apartment, suite, etc.",
+      "city": "City",
+      "region": "Region / State",
+      "postalCode": "Postal code",
+      "country": "Country"
+    }
+  },
+  "orders": {
+    "title": "My orders",
+    "subtitle": "View your order history.",
+    "noOrders": "You haven't placed any orders yet.",
+    "continueShopping": "Explore the collection",
+    "confirmationTitle": "Order confirmed!",
+    "confirmationSubtitle": "Thank you for your order. You will receive a confirmation email shortly.",
+    "orderNumber": "Order number",
+    "viewOrders": "View my orders"
+  },
+  "account": {
+    "title": "My account",
+    "myOrders": "My orders",
+    "myOrdersDescription": "Order history and tracking"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "orders": "Orders",
+    "totalOrders": "Total orders",
+    "pendingOrders": "Pending",
+    "totalCustomers": "Customers",
+    "totalProducts": "Products",
+    "product": "Product",
+    "price": "Price",
+    "stock": "Stock",
+    "status": "Status",
+    "actions": "Actions",
+    "active": "Active",
+    "inactive": "Inactive",
+    "addProduct": "Add product",
+    "noProducts": "No products found.",
+    "noOrders": "No orders found.",
+    "orderNumber": "Order #",
+    "total": "Total",
+    "orderStatus": "Status",
+    "date": "Date",
+    "confirmDelete": "Delete this product?",
+    "productDeleted": "Product deleted.",
+    "deleteFailed": "Delete failed.",
+    "statusUpdated": "Status updated.",
+    "updateFailed": "Update failed.",
+    "editComingSoon": "Edit feature coming soon.",
+    "createProductComingSoon": "Create product: coming soon."
   }
 }

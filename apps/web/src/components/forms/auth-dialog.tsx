@@ -8,6 +8,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { supabaseBrowser } from '@/lib/supabase/client';
+import { api, setApiToken, clearApiToken } from '@/lib/api';
 import {
   Dialog,
   DialogContent,
@@ -78,6 +79,30 @@ function AuthTabs({ onAuthenticated }: AuthTabsProps) {
     router.replace(redirectTo as any);
   };
 
+  /** Obtain a Spring Boot JWT and persist it in localStorage. Failures are non-blocking. */
+  const acquireApiToken = async (email: string, password: string) => {
+    try {
+      const res = await api.post<{ accessToken: string }>('/api/auth/login', { email, password });
+      if (res?.accessToken) setApiToken(res.accessToken);
+    } catch {
+      // API token is optional — Supabase session is the source of truth for protected routes
+    }
+  };
+
+  /** Register in the Spring Boot system so the user exists for order placement. Failures are non-blocking. */
+  const registerApiUser = async (email: string, password: string) => {
+    try {
+      const res = await api.post<{ accessToken: string }>('/api/auth/register', {
+        email,
+        password,
+        name: email.split('@')[0],
+      });
+      if (res?.accessToken) setApiToken(res.accessToken);
+    } catch {
+      // Best-effort
+    }
+  };
+
   const handleLogin = loginForm.handleSubmit(values => {
     startTransition(async () => {
       const { error } = await supabase.auth.signInWithPassword(values);
@@ -85,6 +110,7 @@ function AuthTabs({ onAuthenticated }: AuthTabsProps) {
         toast.error(error.message);
         return;
       }
+      await acquireApiToken(values.email, values.password);
       toast.success(t('success'));
       loginForm.reset();
       handleAuthSuccess();
@@ -103,6 +129,7 @@ function AuthTabs({ onAuthenticated }: AuthTabsProps) {
         toast.error(error.message);
         return;
       }
+      await registerApiUser(email, password);
       toast.success(t('success'));
       registerForm.reset();
       setTab('login');
@@ -198,6 +225,33 @@ function AuthTabs({ onAuthenticated }: AuthTabsProps) {
 export function AuthDialog() {
   const t = useTranslations('auth');
   const [open, setOpen] = useState(false);
+  const supabase = supabaseBrowser();
+  const router = useRouter();
+  const locale = useLocale();
+  const [user, setUser] = useState<{ email?: string } | null>(null);
+
+  useState(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  });
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    clearApiToken();
+    toast.success(t('logout'));
+    router.replace(`/${locale}`);
+  };
+
+  if (user) {
+    return (
+      <Button variant="ghost" className="rounded-full" onClick={handleLogout}>
+        {t('logout')}
+      </Button>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

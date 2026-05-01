@@ -79,11 +79,13 @@
       "propolis": "عكبر"
     },
     "addToCart": "أضف إلى السلة",
+    "addedToCart": "تمت الإضافة إلى السلة",
     "viewDetails": "عرض التفاصيل",
     "outOfStock": "نفذ من المخزون",
     "from": "ابتداءً من",
     "weight": "الوزن",
-    "origin": "المصدر"
+    "origin": "المصدر",
+    "backToCollection": "العودة إلى المجموعة"
   },
   "story": {
     "title": "قصتنا",
@@ -131,6 +133,7 @@
     "title": "وصفات ومذكرات",
     "subtitle": "وصفات موسمية، طقوس علاجية، وقصص من قلب الأطلس.",
     "readMore": "اقرأ المزيد",
+    "backToBlog": "العودة إلى المذكرات",
     "comingSoon": "قصص جديدة قيد التحضير. عد قريباً لاكتشاف وصفات موسمية وطقوس عافية ورسائل من خلف الخلية."
   },
   "footer": {
@@ -172,5 +175,91 @@
     "storyPlaceholder": "نعمل على إعداد قصة غامرة عن إرث عائلة اللمليح، terroir المغربية، وممارسات تربية النحل التجديدية.",
     "blogPlaceholder": "سنشارك قريبًا وصفات موسمية وطقوس علاجية وقصصًا عن مصدر العسل.",
     "contactPlaceholder": "راسلونا على concierge@dar-lemlih.com للتذوّق الخاص أو الشراكات التجارية أو تعاون الضيافة."
+  },
+  "cart": {
+    "title": "سلتك",
+    "empty": "سلتك فارغة",
+    "emptyDescription": "أضف منتجات إلى سلتك للبدء.",
+    "item": "منتج",
+    "items": "منتجات",
+    "subtotal": "المجموع الجزئي",
+    "total": "الإجمالي",
+    "checkout": "إتمام الطلب",
+    "continueShopping": "مواصلة التسوق",
+    "remove": "إزالة"
+  },
+  "checkout": {
+    "title": "إتمام الطلب",
+    "emptyCart": "سلتك فارغة",
+    "continueShopping": "مواصلة التسوق",
+    "shippingAddress": "عنوان الشحن",
+    "paymentMethod": "طريقة الدفع",
+    "cashOnDelivery": "الدفع عند الاستلام",
+    "cashOnDeliveryNote": "تدفع نقداً عند التسليم.",
+    "notes": "ملاحظات الطلب",
+    "notesPlaceholder": "تعليمات خاصة، رمز الوصول، إلخ.",
+    "orderSummary": "ملخص الطلب",
+    "subtotal": "المجموع الجزئي",
+    "shipping": "الشحن",
+    "total": "الإجمالي",
+    "placeOrder": "تأكيد الطلب",
+    "placing": "جاري المعالجة...",
+    "orderPlaced": "تم تأكيد الطلب!",
+    "fields": {
+      "name": "الاسم الكامل",
+      "phone": "الهاتف",
+      "line1": "العنوان",
+      "line2": "الشقة، الجناح، إلخ.",
+      "city": "المدينة",
+      "region": "المنطقة / الولاية",
+      "postalCode": "الرمز البريدي",
+      "country": "البلد"
+    }
+  },
+  "orders": {
+    "title": "طلباتي",
+    "subtitle": "عرض سجل طلباتك.",
+    "noOrders": "لم تقم بأي طلب بعد.",
+    "continueShopping": "استكشف المجموعة",
+    "confirmationTitle": "تم تأكيد طلبك!",
+    "confirmationSubtitle": "شكراً لطلبك. ستتلقى بريداً إلكترونياً للتأكيد قريباً.",
+    "orderNumber": "رقم الطلب",
+    "viewOrders": "عرض طلباتي"
+  },
+  "account": {
+    "title": "حسابي",
+    "myOrders": "طلباتي",
+    "myOrdersDescription": "سجل الطلبات والتتبع"
+  },
+  "admin": {
+    "title": "لوحة الإدارة",
+    "dashboard": "الرئيسية",
+    "products": "المنتجات",
+    "orders": "الطلبات",
+    "totalOrders": "إجمالي الطلبات",
+    "pendingOrders": "قيد الانتظار",
+    "totalCustomers": "العملاء",
+    "totalProducts": "المنتجات",
+    "product": "المنتج",
+    "price": "السعر",
+    "stock": "المخزون",
+    "status": "الحالة",
+    "actions": "الإجراءات",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "addProduct": "إضافة منتج",
+    "noProducts": "لا توجد منتجات.",
+    "noOrders": "لا توجد طلبات.",
+    "orderNumber": "رقم الطلب",
+    "total": "الإجمالي",
+    "orderStatus": "الحالة",
+    "date": "التاريخ",
+    "confirmDelete": "حذف هذا المنتج؟",
+    "productDeleted": "تم حذف المنتج.",
+    "deleteFailed": "فشل الحذف.",
+    "statusUpdated": "تم تحديث الحالة.",
+    "updateFailed": "فشل التحديث.",
+    "editComingSoon": "ميزة التعديل قريباً.",
+    "createProductComingSoon": "إنشاء منتج: قريباً."
   }
 }
