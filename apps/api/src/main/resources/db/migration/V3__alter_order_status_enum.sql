@@ -1,0 +1,3 @@
+-- Align orders.status column with Hibernate 6 MySQL enum mapping
+ALTER TABLE orders
+  MODIFY COLUMN status ENUM('PENDING','CONFIRMED','PAID','PROCESSING','SHIPPED','DELIVERED','COMPLETED','CANCELLED','REFUNDED') NOT NULL DEFAULT 'PENDING';

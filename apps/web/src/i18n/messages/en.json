@@ -1,0 +1,102 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Collection",
+    "about": "Our Story",
+    "blog": "Recipes & Journal",
+    "contact": "Contact",
+    "account": "Account",
+    "cart": "Cart",
+    "login": "Sign in",
+    "logout": "Sign out"
+  },
+  "hero": {
+    "title": "Rare Moroccan honey, crafted with reverence.",
+    "subtitle": "From Atlas peaks to the desert bloom, every jar reveals a terroir preserved by artisan beekeepers.",
+    "primaryCta": "Explore the collection",
+    "secondaryCta": "Discover our honeys",
+    "alt": "Dar Lemlih honey jars arranged on a marble table with Moroccan sunlight"
+  },
+  "usp": {
+    "atlas": {
+      "title": "Atlas Provenance",
+      "description": "Harvested at altitude for exceptional mineral complexity and floral depth."
+    },
+    "lab": {
+      "title": "Laboratory Certified",
+      "description": "Independent analyses guarantee purity, traceability, and active enzymes."
+    },
+    "sustainable": {
+      "title": "Sustainable Packaging",
+      "description": "Recyclable glass and hand-finished lids designed for keepsake reuse."
+    }
+  },
+  "cta": {
+    "wholesale": "Talk to a honey concierge",
+    "story": "Why our honey"
+  },
+  "socialProof": {
+    "title": "Certified Excellence",
+    "subtitle": "Trusted by sommeliers, spa rituals, and Michelin-starred chefs across the Mediterranean.",
+    "certifications": {
+      "ifos": "IFOS Pure",
+      "iso": "ISO 22000",
+      "halal": "Halal Maroc"
+    }
+  },
+  "steps": {
+    "foraging": {
+      "title": "Foraging the wild bloom",
+      "description": "Our bees roam biodiverse valleys, guided by ancestral beekeeping calendars."
+    },
+    "harvest": {
+      "title": "Harvest at dawn",
+      "description": "Honeycombs are lifted before sunrise to preserve volatile aromas and enzymes."
+    },
+    "analysis": {
+      "title": "Laboratory certification",
+      "description": "Each batch undergoes pollen, moisture, and purity analysis for transparent terroir data."
+    },
+    "craft": {
+      "title": "Crafted for the jar",
+      "description": "Slow decanting, minimal filtration, and hand-finished packaging ready for the table."
+    }
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "cookies": "Cookies"
+  },
+  "auth": {
+    "title": "Your Dar Lemlih account",
+    "tabs": {
+      "login": "Sign in",
+      "register": "Create account",
+      "reset": "Reset password"
+    },
+    "email": "Email address",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "forgot": "Forgot password?",
+    "submit": "Continue",
+    "oauth": "Continue with {{provider}}",
+    "success": "Authenticated successfully.",
+    "logout": "You are signed out."
+  },
+  "cookieBanner": {
+    "title": "We bake honey cookies too.",
+    "description": "We use cookies to personalise your experience, measure traffic, and craft sweeter offers.",
+    "accept": "Accept all",
+    "preferences": "Manage preferences"
+  },
+  "common": {
+    "languageSelector": "Languages",
+    "journeyDescription": "Describing the journey from hive to jar with rigorous care.",
+    "wholesaleDescription": "Share your table, boutique, or wellbeing ritual with honey curated for haute gastronomie.",
+    "productsPlaceholder": "The collection will unveil soon with artisan batches, tasting notes, and variant selection.",
+    "storyPlaceholder": "An immersive narrative about the Lemlih family legacy, terroirs, and regenerative beekeeping is in preparation.",
+    "blogPlaceholder": "Seasonal recipes, rituals, and provenance stories will appear here shortly.",
+    "contactPlaceholder": "Write to concierge@dar-lemlih.com for bespoke tastings, retail partnerships, and hospitality collaborations."
+  }
+}

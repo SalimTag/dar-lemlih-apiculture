@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: theme('colors.sand.25');
+}
+
+.shadow-glass {
+  box-shadow: 0 16px 32px -20px rgba(17, 12, 8, 0.35);
+}
+
+.container-bleed {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+}
+
+.section-padding {
+  @apply py-16 sm:py-20 lg:py-24;
+}
+
+.backdrop-panel {
+  @apply rounded-3xl border border-white/30 bg-white/70 backdrop-blur-xl shadow-lg;
+}
+
+.dark .backdrop-panel {
+  @apply border-white/10 bg-charcoal-950/70;
+}
+
+::-moz-selection {
+  @apply bg-amber-200 text-charcoal-900;
+}
+
+::selection {
+  @apply bg-amber-200 text-charcoal-900;
+}
+
+[data-radix-popper-content-wrapper] {
+  z-index: 60;
+}
