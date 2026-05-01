@@ -6,7 +6,10 @@ const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElemen
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("rounded-lg border bg-card text-card-foreground shadow-sm", className)}
+      className={cn(
+        "group relative overflow-hidden rounded-3xl border border-white/20 bg-white/70 shadow-glass backdrop-blur-md transition-all duration-500 ease-out-expo hover:shadow-elevated hover:-translate-y-1 dark:border-white/8 dark:bg-charcoal-900/60",
+        className
+      )}
       {...props}
     />
   )
@@ -17,7 +20,7 @@ const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("flex flex-col space-y-1.5 p-6", className)}
+      className={cn("flex flex-col space-y-2 p-6 pb-3", className)}
       {...props}
     />
   )
@@ -28,7 +31,7 @@ const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HT
   ({ className, ...props }, ref) => (
     <h3
       ref={ref}
-      className={cn("text-2xl font-semibold leading-none tracking-tight", className)}
+      className={cn("font-display text-xl font-semibold leading-tight tracking-tight text-charcoal-900 dark:text-amber-50", className)}
       {...props}
     />
   )
@@ -39,7 +42,7 @@ const CardDescription = React.forwardRef<HTMLParagraphElement, React.HTMLAttribu
   ({ className, ...props }, ref) => (
     <p
       ref={ref}
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-sm leading-relaxed text-charcoal-600 dark:text-charcoal-300", className)}
       {...props}
     />
   )
@@ -48,7 +51,7 @@ CardDescription.displayName = "CardDescription"
 
 const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
+    <div ref={ref} className={cn("p-6 pt-2", className)} {...props} />
   )
 )
 CardContent.displayName = "CardContent"

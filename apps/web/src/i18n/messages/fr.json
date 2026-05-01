@@ -12,32 +12,39 @@
   },
   "hero": {
     "title": "Un miel marocain rare, façonné avec révérence.",
-    "subtitle": "Des sommets de l’Atlas aux fleurs du désert, chaque jarre révèle un terroir préservé par nos apiculteurs artisans.",
+    "subtitle": "Des sommets de l'Atlas aux fleurs du désert, chaque jarre révèle un terroir préservé par nos apiculteurs artisans depuis des générations.",
     "primaryCta": "Explorer la collection",
-    "secondaryCta": "Voir notre miel",
+    "secondaryCta": "Découvrir notre histoire",
     "alt": "Pots de miel Dar Lemlih alignés sur une table en marbre, baignés par la lumière marocaine"
   },
   "usp": {
     "atlas": {
       "title": "Origine Atlas",
-      "description": "Récolté en altitude pour une complexité minérale et une profondeur florale exceptionnelles."
+      "description": "Récolté en altitude dans le Haut Atlas pour une complexité minérale et une profondeur florale irréplicables."
     },
     "lab": {
       "title": "Analyses laboratoire",
-      "description": "Des analyses indépendantes garantissent pureté, traçabilité et enzymes actives."
+      "description": "Des analyses indépendantes garantissent une pureté absolue, une traçabilité complète et la préservation des enzymes actives."
     },
     "sustainable": {
-      "title": "Emballage durable",
-      "description": "Verre recyclable et couvercles façonnés à la main pensés pour être réutilisés."
+      "title": "Artisanat durable",
+      "description": "Verre recyclable et couvercles façonnés à la main, de la ruche à la table sans gaspillage."
     }
   },
   "cta": {
     "wholesale": "Parler à un concierge miel",
-    "story": "Pourquoi notre miel"
+    "story": "Pourquoi notre miel",
+    "shopNow": "Commander",
+    "learnMore": "En savoir plus"
   },
   "socialProof": {
     "title": "Excellence certifiée",
     "subtitle": "Plébiscité par les sommeliers, les rituels spa et les chefs étoilés autour de la Méditerranée.",
+    "stats": {
+      "altitude": "Altitude",
+      "purity": "Pur & naturel",
+      "terroirs": "Terroirs explorés"
+    },
     "certifications": {
       "ifos": "IFOS Pure",
       "iso": "ISO 22000",
@@ -47,26 +54,93 @@
   "steps": {
     "foraging": {
       "title": "Butinage des fleurs sauvages",
-      "description": "Nos abeilles parcourent des vallées biodiverses guidées par les calendriers apicoles ancestraux."
+      "description": "Nos abeilles parcourent des vallées biodiverses, guidées par les calendriers apicoles ancestraux transmis depuis des générations."
     },
     "harvest": {
-      "title": "Récolte à l’aube",
-      "description": "Les rayons sont levés avant le lever du soleil pour préserver arômes et enzymes volatiles."
+      "title": "Récolte à l'aube",
+      "description": "Les rayons sont levés avant le lever du soleil pour préserver les arômes volatils, les enzymes délicates et la fraîcheur maximale."
     },
     "analysis": {
       "title": "Certification en laboratoire",
-      "description": "Chaque lot passe par des analyses de pollen, d’humidité et de pureté pour une traçabilité totale."
+      "description": "Chaque lot passe par des analyses rigoureuses de pollen, d'humidité et de pureté pour une traçabilité totale."
     },
     "craft": {
       "title": "Mise en jarre artisanale",
-      "description": "Décantation lente, filtration minimale et habillage manuel prêt pour votre table."
+      "description": "Décantation lente, filtration minimale et habillage manuel, prêt pour votre table et vos rituels."
     }
+  },
+  "products": {
+    "title": "La Collection",
+    "subtitle": "Chaque pot raconte une histoire de terroir, de saison et d'artisanat — sélectionné pour sa profondeur, sa rareté et son authenticité.",
+    "filter": {
+      "all": "Tout",
+      "honey": "Miel",
+      "pollen": "Pollen",
+      "propolis": "Propolis"
+    },
+    "addToCart": "Ajouter au panier",
+    "viewDetails": "Voir les détails",
+    "outOfStock": "Rupture de stock",
+    "from": "À partir de",
+    "weight": "Poids",
+    "origin": "Origine"
+  },
+  "story": {
+    "title": "Notre Histoire",
+    "heroText": "Trois générations d'apiculture, un engagement indéfectible envers la terre.",
+    "chapter1Title": "Enracinés dans l'Atlas",
+    "chapter1Text": "La famille Lemlih entretient des ruches dans le Haut Atlas depuis les années 1960. Ce qui a commencé comme une tradition familiale dans le village d'Aït Bouguemez est devenu une philosophie — celle qui place la santé de la terre, des abeilles et de la communauté au-dessus de tout.",
+    "chapter2Title": "Une philosophie du terroir",
+    "chapter2Text": "Comme le grand vin, chaque miel raconte l'histoire de son origine. L'altitude, les fleurs sauvages, la saison — chaque variable façonne un profil gustatif unique. Nous ne mélangeons pas, nous ne standardisons pas. Nous célébrons ce que la nature crée.",
+    "chapter3Title": "Le prochain chapitre",
+    "chapter3Text": "Aujourd'hui, Dar Lemlih apporte le miel de terroir marocain aux tables les plus exigeantes du monde, tout en investissant dans des pratiques apicoles régénératives et en soutenant les communautés montagnardes locales.",
+    "valuesTitle": "Nos Valeurs",
+    "values": {
+      "terroir": {
+        "title": "Le terroir d'abord",
+        "description": "Chaque pot exprime un lieu et une saison spécifiques."
+      },
+      "transparency": {
+        "title": "Transparence totale",
+        "description": "Rapports d'analyse complets, données d'origine et dates de récolte."
+      },
+      "regenerative": {
+        "title": "Pratique régénérative",
+        "description": "Nous rendons plus à la terre que ce que nous prélevons."
+      }
+    }
+  },
+  "contact": {
+    "title": "Nous contacter",
+    "subtitle": "Que vous soyez chef, détaillant ou passionné de miel — nous serions ravis d'échanger avec vous.",
+    "form": {
+      "name": "Votre nom",
+      "email": "Adresse email",
+      "subject": "Sujet",
+      "message": "Votre message",
+      "submit": "Envoyer",
+      "success": "Message envoyé avec succès. Nous vous répondrons dans les plus brefs délais."
+    },
+    "info": {
+      "email": "concierge@dar-lemlih.com",
+      "location": "Marrakech, Maroc",
+      "hours": "Lun–Ven, 9h–18h GMT+1"
+    }
+  },
+  "blog": {
+    "title": "Recettes & Journal",
+    "subtitle": "Recettes de saison, rituels et récits de provenance depuis l'Atlas.",
+    "readMore": "Lire la suite",
+    "comingSoon": "De nouvelles histoires mijotent. Revenez bientôt pour des recettes saisonnières, des rituels bien-être et des chroniques derrière la ruche."
   },
   "footer": {
     "rights": "Tous droits réservés.",
     "privacy": "Confidentialité",
     "terms": "Mentions légales",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "tagline": "Des sommets de l'Atlas à votre table — miel marocain de terroir rare, façonné avec révérence et certifié pour sa pureté.",
+    "legal": "Juridique",
+    "madeIn": "Fait avec ❤️ au Maroc 🇲🇦"
   },
   "auth": {
     "title": "Votre compte Dar Lemlih",
@@ -86,16 +160,16 @@
   },
   "cookieBanner": {
     "title": "Nous faisons aussi des cookies au miel.",
-    "description": "Nous utilisons des cookies pour personnaliser votre expérience, mesurer l’audience et proposer des offres plus justes.",
+    "description": "Nous utilisons des cookies pour personnaliser votre expérience, mesurer l'audience et proposer des offres plus justes.",
     "accept": "Tout accepter",
     "preferences": "Gérer mes choix"
   },
   "common": {
     "languageSelector": "Langues",
-    "journeyDescription": "Nous racontons le voyage de la ruche au pot avec une rigueur absolue.",
+    "journeyDescription": "Nous racontons le voyage de la ruche au pot avec une rigueur absolue et un savoir-faire ancestral.",
     "wholesaleDescription": "Partagez votre table, votre boutique ou votre rituel bien-être avec un miel pensé pour la haute gastronomie.",
     "productsPlaceholder": "La collection arrivera bientôt avec des crus artisanaux, des notes de dégustation et le choix des formats.",
-    "storyPlaceholder": "Nous préparons un récit immersif sur l’héritage de la famille Lemlih, les terroirs et l’apiculture régénérative.",
+    "storyPlaceholder": "Nous préparons un récit immersif sur l'héritage de la famille Lemlih, les terroirs et l'apiculture régénérative.",
     "blogPlaceholder": "Des recettes de saison, rituels et récits de provenance seront publiés ici très bientôt.",
     "contactPlaceholder": "Écrivez à concierge@dar-lemlih.com pour des dégustations sur-mesure, des partenariats retail et des collaborations hôtelières."
   }

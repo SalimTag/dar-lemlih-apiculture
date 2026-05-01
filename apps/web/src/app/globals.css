@@ -2,49 +2,254 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Design Tokens ─────────────────────────────────── */
 :root {
   color-scheme: light;
   --radius-sm: 10px;
   --radius-md: 16px;
   --radius-lg: 24px;
+
+  /* Moroccan terroir palette */
+  --honey-glow: 42 100% 55%;
+  --atlas-green: 162 30% 32%;
+  --terracotta: 18 60% 50%;
+
+  /* Glass panel defaults */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-blur: 20px;
 }
 
+.dark {
+  --glass-bg: rgba(13, 18, 21, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+/* ─── Global Reset Enhancements ─────────────────────── */
 html {
   scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   background-color: theme('colors.sand.25');
+  overflow-x: hidden;
 }
 
-.shadow-glass {
-  box-shadow: 0 16px 32px -20px rgba(17, 12, 8, 0.35);
-}
-
-.container-bleed {
-  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
-}
-
-.section-padding {
-  @apply py-16 sm:py-20 lg:py-24;
-}
-
-.backdrop-panel {
-  @apply rounded-3xl border border-white/30 bg-white/70 backdrop-blur-xl shadow-lg;
-}
-
-.dark .backdrop-panel {
-  @apply border-white/10 bg-charcoal-950/70;
-}
-
+/* ─── Premium Selection ─────────────────────────────── */
 ::-moz-selection {
-  @apply bg-amber-200 text-charcoal-900;
+  @apply bg-amber-200/80 text-charcoal-900;
 }
 
 ::selection {
-  @apply bg-amber-200 text-charcoal-900;
+  @apply bg-amber-200/80 text-charcoal-900;
 }
 
+/* ─── Layout Utilities ──────────────────────────────── */
+.container-bleed {
+  @apply mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10;
+}
+
+.section-padding {
+  @apply py-20 sm:py-24 lg:py-32;
+}
+
+/* ─── Glassmorphism System ──────────────────────────── */
+.backdrop-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  @apply rounded-3xl shadow-lg;
+}
+
+/* ─── Shadow System ─────────────────────────────────── */
+.shadow-glass {
+  box-shadow:
+    0 16px 40px -16px rgba(17, 12, 8, 0.18),
+    0 2px 8px -2px rgba(17, 12, 8, 0.08);
+}
+
+.shadow-elevated {
+  box-shadow:
+    0 32px 80px -24px rgba(17, 12, 8, 0.2),
+    0 4px 12px -4px rgba(17, 12, 8, 0.06);
+}
+
+/* ─── Scroll-Triggered Animations ───────────────────── */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes honey-drip {
+  0%, 100% { border-radius: 36% 64% 52% 48% / 54% 46% 54% 46%; }
+  25% { border-radius: 48% 52% 62% 38% / 42% 58% 42% 58%; }
+  50% { border-radius: 62% 38% 42% 58% / 56% 44% 56% 44%; }
+  75% { border-radius: 52% 48% 38% 62% / 48% 52% 48% 52%; }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-slide-left {
+  animation: slide-in-left 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+.animate-slide-right {
+  animation: slide-in-right 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  opacity: 0;
+}
+
+/* Stagger children delay classes */
+.stagger-1 { animation-delay: 100ms; }
+.stagger-2 { animation-delay: 200ms; }
+.stagger-3 { animation-delay: 300ms; }
+.stagger-4 { animation-delay: 400ms; }
+.stagger-5 { animation-delay: 500ms; }
+.stagger-6 { animation-delay: 600ms; }
+
+/* ─── Skeleton Loader ───────────────────────────────── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    theme('colors.sand.100') 25%,
+    theme('colors.sand.50') 50%,
+    theme('colors.sand.100') 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+  @apply rounded-2xl;
+}
+
+.dark .skeleton {
+  background: linear-gradient(
+    90deg,
+    theme('colors.charcoal.800') 25%,
+    theme('colors.charcoal.700') 50%,
+    theme('colors.charcoal.800') 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* ─── Organic Shape ─────────────────────────────────── */
+.honey-blob {
+  animation: honey-drip 12s ease-in-out infinite;
+}
+
+/* ─── Premium Divider ───────────────────────────────── */
+.divider-honey {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    theme('colors.amber.300') 20%,
+    theme('colors.amber.500') 50%,
+    theme('colors.amber.300') 80%,
+    transparent 100%
+  );
+  @apply mx-auto max-w-xs opacity-40;
+}
+
+.dark .divider-honey {
+  @apply opacity-20;
+}
+
+/* ─── Focus ring for accessibility ──────────────────── */
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-sand-25;
+}
+
+.dark .focus-ring {
+  @apply focus-visible:ring-offset-charcoal-950;
+}
+
+/* ─── Radix overlay z-index ─────────────────────────── */
 [data-radix-popper-content-wrapper] {
   z-index: 60;
+}
+
+/* ─── Touch targets ─────────────────────────────────── */
+@media (pointer: coarse) {
+  button,
+  a,
+  [role="button"],
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ─── RTL adjustments ───────────────────────────────── */
+[dir="rtl"] .font-display {
+  font-family: "Noto Sans Arabic", var(--font-display), serif;
+}
+
+[dir="rtl"] .font-sans {
+  font-family: "Noto Sans Arabic", var(--font-sans), system-ui;
 }

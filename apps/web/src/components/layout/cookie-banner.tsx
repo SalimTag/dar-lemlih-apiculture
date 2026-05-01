@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
+import { Cookie } from 'lucide-react';
 
 const STORAGE_KEY = 'dar-lemlih-cookies';
 
@@ -41,19 +42,39 @@ export function CookieBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-4 z-50 px-4 sm:px-6">
-      <div className="mx-auto flex max-w-3xl flex-col gap-3 rounded-3xl border border-white/30 bg-white/90 p-6 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-charcoal-900/90">
-        <div className="space-y-2">
-          <h3 className="font-display text-lg font-semibold text-charcoal-900 dark:text-amber-50">
-            {t('title')}
-          </h3>
-          <p className="text-sm text-charcoal-600 dark:text-charcoal-300">{t('description')}</p>
+    <div
+      className="fixed inset-x-0 bottom-4 z-50 px-4 sm:px-6 animate-slide-up"
+      role="dialog"
+      aria-label={t('title')}
+    >
+      <div className="mx-auto flex max-w-2xl flex-col gap-4 rounded-3xl border border-white/25 bg-white/92 p-6 shadow-elevated backdrop-blur-xl sm:flex-row sm:items-center dark:border-white/10 dark:bg-charcoal-900/92">
+        <div className="flex items-start gap-3 sm:flex-1">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100/80 dark:bg-amber-900/20">
+            <Cookie className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="font-display text-sm font-semibold text-charcoal-900 dark:text-amber-50">
+              {t('title')}
+            </h3>
+            <p className="text-xs leading-relaxed text-charcoal-600 dark:text-charcoal-400">
+              {t('description')}
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
-          <Button variant="ghost" className="rounded-full border border-transparent sm:w-auto" onClick={accept}>
+        <div className="flex shrink-0 items-center gap-2.5">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="rounded-full text-xs"
+            onClick={accept}
+          >
             {t('preferences')}
           </Button>
-          <Button className="rounded-full sm:w-auto" onClick={accept}>
+          <Button
+            size="sm"
+            className="rounded-full text-xs"
+            onClick={accept}
+          >
             {t('accept')}
           </Button>
         </div>

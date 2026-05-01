@@ -1,25 +1,70 @@
-import { getTranslations } from 'next-intl/server';
-import type { Locale } from '@/i18n/routing';
+'use client';
+
+import { useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
+import { AnimateOnScroll } from '@/components/ui/animate-on-scroll';
 
-const CERTIFICATIONS = ['ifos', 'iso', 'halal'];
+const CERTIFICATIONS = ['ifos', 'iso', 'halal'] as const;
 
-export async function SocialProof({ locale }: { locale: Locale }) {
-  const t = await getTranslations({ locale, namespace: 'socialProof' });
+const STATS = [
+  { value: '2,400m', labelKey: 'altitude' },
+  { value: '100%', labelKey: 'purity' },
+  { value: '12+', labelKey: 'terroirs' },
+] as const;
+
+export function SocialProof({ locale }: { locale: string }) {
+  const t = useTranslations('socialProof');
 
   return (
-    <div className="flex flex-col items-center gap-6 rounded-3xl border border-white/20 bg-white/80 p-8 text-center shadow-card backdrop-blur dark:border-white/10 dark:bg-charcoal-900/70">
-      <p className="text-sm uppercase tracking-[0.4em] text-amber-600">{t('title')}</p>
-      <h2 className="max-w-2xl font-display text-3xl font-semibold text-charcoal-900 dark:text-amber-50">
-        {t('subtitle')}
-      </h2>
-      <div className="flex flex-wrap items-center justify-center gap-4">
-        {CERTIFICATIONS.map(item => (
-          <Badge key={item} variant="glass" className="rounded-2xl px-5 py-2 text-base uppercase">
-            {t(`certifications.${item}`)}
-          </Badge>
-        ))}
+    <AnimateOnScroll animation="scale-in">
+      <div className="relative overflow-hidden rounded-4xl border border-white/20 bg-white/70 p-10 text-center shadow-glass backdrop-blur-xl sm:p-14 dark:border-white/8 dark:bg-charcoal-900/60">
+        {/* Background accent */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-amber-100/30 via-transparent to-atlas-100/20 dark:from-amber-900/10 dark:to-atlas-900/10" />
+
+        <div className="relative space-y-10">
+          {/* Title section */}
+          <div className="space-y-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.5em] text-amber-600 dark:text-amber-400">
+              {t('title')}
+            </p>
+            <h2 className="mx-auto max-w-2xl font-display text-display text-charcoal-900 dark:text-amber-50">
+              {t('subtitle')}
+            </h2>
+          </div>
+
+          {/* Stats row */}
+          <div className="mx-auto grid max-w-2xl grid-cols-3 gap-6">
+            {STATS.map((stat, index) => (
+              <AnimateOnScroll key={stat.labelKey} animation="fade-up" delay={index * 100}>
+                <div className="space-y-1">
+                  <p className="font-display text-3xl font-bold text-amber-500 sm:text-4xl dark:text-amber-400">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs uppercase tracking-wider text-charcoal-500 dark:text-charcoal-400">
+                    {t(`stats.${stat.labelKey}`)}
+                  </p>
+                </div>
+              </AnimateOnScroll>
+            ))}
+          </div>
+
+          {/* Divider */}
+          <div className="divider-honey" />
+
+          {/* Certifications */}
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            {CERTIFICATIONS.map(item => (
+              <Badge
+                key={item}
+                variant="glass"
+                className="rounded-full px-5 py-2.5 text-sm font-medium uppercase tracking-wider"
+              >
+                {t(`certifications.${item}`)}
+              </Badge>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
+    </AnimateOnScroll>
   );
 }

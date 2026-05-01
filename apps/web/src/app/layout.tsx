@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Playfair_Display, Manrope } from 'next/font/google';
+import { Playfair_Display, Manrope, Noto_Sans_Arabic } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { getLocale } from 'next-intl/server';
@@ -17,33 +17,41 @@ const sans = Manrope({
   variable: '--font-sans'
 });
 
+const arabic = Noto_Sans_Arabic({
+  subsets: ['arabic'],
+  variable: '--font-arabic',
+  weight: ['400', '500', '600', '700'],
+});
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.dar-lemlih.com'),
   title: {
-    default: 'Dar Lemlih Apiculture',
-    template: '%s · Dar Lemlih Apiculture'
+    default: 'Atlas Nectar · Dar Lemlih',
+    template: '%s · Atlas Nectar'
   },
   description:
-    'Dar Lemlih crée des miels marocains d’exception depuis l’Atlas. Découvrez nos crus rares, nos rituels, et notre savoir-faire apicole ancestral.',
+    `Dar Lemlih crée des miels marocains d'exception depuis l'Atlas. Découvrez nos crus rares, nos rituels, et notre savoir-faire apicole ancestral.`,
   keywords: [
     'miel marocain',
     'apiculture de luxe',
     'honey morocco',
     'atlas honey',
-    'dar lemlih'
+    'dar lemlih',
+    'عسل مغربي',
+    'miel de terroir'
   ],
   openGraph: {
-    title: 'Dar Lemlih Apiculture',
+    title: 'Atlas Nectar · Dar Lemlih',
     description:
       'Une apiculture marocaine de prestige : crus rares, analyses, et histoires de rucher.',
     url: 'https://www.dar-lemlih.com',
-    siteName: 'Dar Lemlih',
+    siteName: 'Atlas Nectar',
     type: 'website',
     locale: 'fr_FR'
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Dar Lemlih Apiculture',
+    title: 'Atlas Nectar · Dar Lemlih',
     description: 'Miels marocains de prestige, sourcés avec rigueur et passion.',
     creator: '@darlemlih'
   },
@@ -56,7 +64,12 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [{ media: '(prefers-color-scheme: dark)', color: '#0a0a0a' }, { color: '#f8f5f0' }]
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0b0e11' },
+    { color: '#f9f6f1' }
+  ],
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -68,7 +81,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       lang={locale}
       dir={direction}
       suppressHydrationWarning
-      className={`${display.variable} ${sans.variable}`}
+      className={`${display.variable} ${sans.variable} ${arabic.variable}`}
     >
       <body className="min-h-screen bg-sand-25 font-sans text-charcoal-900 antialiased">
         <Providers>

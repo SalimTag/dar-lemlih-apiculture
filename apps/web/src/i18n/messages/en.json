@@ -12,32 +12,39 @@
   },
   "hero": {
     "title": "Rare Moroccan honey, crafted with reverence.",
-    "subtitle": "From Atlas peaks to the desert bloom, every jar reveals a terroir preserved by artisan beekeepers.",
+    "subtitle": "From Atlas peaks to the desert bloom, every jar reveals a terroir preserved by artisan beekeepers for generations.",
     "primaryCta": "Explore the collection",
-    "secondaryCta": "Discover our honeys",
+    "secondaryCta": "Discover our story",
     "alt": "Dar Lemlih honey jars arranged on a marble table with Moroccan sunlight"
   },
   "usp": {
     "atlas": {
       "title": "Atlas Provenance",
-      "description": "Harvested at altitude for exceptional mineral complexity and floral depth."
+      "description": "Harvested at altitude in the High Atlas for exceptional mineral complexity and floral depth that cannot be replicated."
     },
     "lab": {
       "title": "Laboratory Certified",
-      "description": "Independent analyses guarantee purity, traceability, and active enzymes."
+      "description": "Independent analyses guarantee absolute purity, complete traceability, and active enzyme preservation in every jar."
     },
     "sustainable": {
-      "title": "Sustainable Packaging",
-      "description": "Recyclable glass and hand-finished lids designed for keepsake reuse."
+      "title": "Sustainable Craft",
+      "description": "Recyclable glass and hand-finished lids designed for keepsake reuse, from hive to table with zero waste."
     }
   },
   "cta": {
     "wholesale": "Talk to a honey concierge",
-    "story": "Why our honey"
+    "story": "Why our honey",
+    "shopNow": "Shop now",
+    "learnMore": "Learn more"
   },
   "socialProof": {
     "title": "Certified Excellence",
     "subtitle": "Trusted by sommeliers, spa rituals, and Michelin-starred chefs across the Mediterranean.",
+    "stats": {
+      "altitude": "Altitude",
+      "purity": "Pure & natural",
+      "terroirs": "Terroirs explored"
+    },
     "certifications": {
       "ifos": "IFOS Pure",
       "iso": "ISO 22000",
@@ -47,26 +54,93 @@
   "steps": {
     "foraging": {
       "title": "Foraging the wild bloom",
-      "description": "Our bees roam biodiverse valleys, guided by ancestral beekeeping calendars."
+      "description": "Our bees roam biodiverse valleys, guided by ancestral beekeeping calendars passed down through generations."
     },
     "harvest": {
       "title": "Harvest at dawn",
-      "description": "Honeycombs are lifted before sunrise to preserve volatile aromas and enzymes."
+      "description": "Honeycombs are lifted before sunrise to preserve volatile aromas, delicate enzymes, and peak freshness."
     },
     "analysis": {
       "title": "Laboratory certification",
-      "description": "Each batch undergoes pollen, moisture, and purity analysis for transparent terroir data."
+      "description": "Each batch undergoes rigorous pollen, moisture, and purity analysis for transparent terroir data."
     },
     "craft": {
       "title": "Crafted for the jar",
-      "description": "Slow decanting, minimal filtration, and hand-finished packaging ready for the table."
+      "description": "Slow decanting, minimal filtration, and hand-finished packaging ready for your table and your rituals."
     }
+  },
+  "products": {
+    "title": "The Collection",
+    "subtitle": "Each jar is a story of terroir, season, and craft — selected for depth, rarity, and authenticity.",
+    "filter": {
+      "all": "All",
+      "honey": "Honey",
+      "pollen": "Pollen",
+      "propolis": "Propolis"
+    },
+    "addToCart": "Add to cart",
+    "viewDetails": "View details",
+    "outOfStock": "Out of stock",
+    "from": "From",
+    "weight": "Weight",
+    "origin": "Origin"
+  },
+  "story": {
+    "title": "Our Story",
+    "heroText": "Three generations of beekeeping, one unwavering commitment to the land.",
+    "chapter1Title": "Rooted in the Atlas",
+    "chapter1Text": "The Lemlih family has tended hives in the High Atlas Mountains since the 1960s. What began as a family tradition in the village of Ait Bouguemez has grown into a philosophy — one that places the health of the land, the bees, and the community above all else.",
+    "chapter2Title": "A Terroir Philosophy",
+    "chapter2Text": "Like fine wine, every honey tells the story of its origin. The altitude, the wildflowers, the season — each variable shapes a unique flavor profile. We don't blend or homogenize. We celebrate what nature creates.",
+    "chapter3Title": "The Next Chapter",
+    "chapter3Text": "Today, Dar Lemlih brings Moroccan terroir honey to discerning tables worldwide, while investing in regenerative beekeeping practices and supporting local mountain communities.",
+    "valuesTitle": "Our Values",
+    "values": {
+      "terroir": {
+        "title": "Terroir First",
+        "description": "Every jar expresses a specific place and season."
+      },
+      "transparency": {
+        "title": "Radical Transparency",
+        "description": "Full lab reports, origin data, and harvest dates."
+      },
+      "regenerative": {
+        "title": "Regenerative Practice",
+        "description": "We give back more to the land than we take."
+      }
+    }
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Whether you're a chef, retailer, or honey enthusiast — we'd love to hear from you.",
+    "form": {
+      "name": "Your name",
+      "email": "Email address",
+      "subject": "Subject",
+      "message": "Your message",
+      "submit": "Send message",
+      "success": "Message sent successfully. We'll get back to you shortly."
+    },
+    "info": {
+      "email": "concierge@dar-lemlih.com",
+      "location": "Marrakech, Morocco",
+      "hours": "Mon–Fri, 9:00–18:00 GMT+1"
+    }
+  },
+  "blog": {
+    "title": "Recipes & Journal",
+    "subtitle": "Seasonal recipes, rituals, and provenance stories from the Atlas.",
+    "readMore": "Read more",
+    "comingSoon": "New stories are brewing. Check back soon for seasonal recipes, wellness rituals, and behind-the-hive dispatches."
   },
   "footer": {
     "rights": "All rights reserved.",
     "privacy": "Privacy",
     "terms": "Terms",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "tagline": "From Atlas peaks to your table — rare Moroccan terroir honey, crafted with reverence and certified for purity.",
+    "legal": "Legal",
+    "madeIn": "Made with ❤️ in Morocco 🇲🇦"
   },
   "auth": {
     "title": "Your Dar Lemlih account",
@@ -92,7 +166,7 @@
   },
   "common": {
     "languageSelector": "Languages",
-    "journeyDescription": "Describing the journey from hive to jar with rigorous care.",
+    "journeyDescription": "Describing the journey from hive to jar with rigorous care and ancestral wisdom.",
     "wholesaleDescription": "Share your table, boutique, or wellbeing ritual with honey curated for haute gastronomie.",
     "productsPlaceholder": "The collection will unveil soon with artisan batches, tasting notes, and variant selection.",
     "storyPlaceholder": "An immersive narrative about the Lemlih family legacy, terroirs, and regenerative beekeeping is in preparation.",

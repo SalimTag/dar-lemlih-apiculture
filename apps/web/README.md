@@ -1,6 +1,6 @@
-# Dar Lemlih Web – Next.js App Router
+# Atlas Nectar Web – Next.js App Router
 
-Luxury Moroccan apiculture storefront built with Next.js 14 App Router, shadcn/ui, Supabase Auth, Stripe Checkout, and next-intl. The marketing experience is available in Arabic, French, and English with RTL/LTR awareness and a design system tuned for Dar Lemlih’s brand codes.
+Luxury Moroccan apiculture storefront built with Next.js 14 App Router, shadcn/ui, Supabase Auth, Stripe Checkout, and next-intl. The marketing experience is available in Arabic, French, and English with RTL/LTR awareness and a design system tuned for Atlas Nectar’s brand codes.
 
 ## Prerequisites
 

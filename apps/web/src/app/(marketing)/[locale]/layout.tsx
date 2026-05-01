@@ -31,7 +31,7 @@ export default async function MarketingLayout({ children, params }: LayoutProps)
     <NextIntlClientProvider locale={locale} messages={messages}>
       <div className="flex min-h-screen flex-col">
         <SiteHeader locale={locale} />
-        <main className="flex-1 space-y-24 bg-none py-16 sm:py-20">
+        <main className="flex-1 bg-none">
           {children}
         </main>
         <SiteFooter locale={locale} />

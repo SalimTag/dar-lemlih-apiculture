@@ -75,7 +75,7 @@ function AuthTabs({ onAuthenticated }: AuthTabsProps) {
 
   const handleAuthSuccess = () => {
     onAuthenticated?.();
-    router.replace(redirectTo);
+    router.replace(redirectTo as any);
   };
 
   const handleLogin = loginForm.handleSubmit(values => {
