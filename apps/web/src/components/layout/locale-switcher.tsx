@@ -25,7 +25,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
   const handleChange = (next: Locale) => {
     setOpen(false);
     const newPath = pathname.replace(`/${locale}`, `/${next}`);
-    router.replace(newPath as any);
+    router.replace(newPath as `/${string}`);
   };
 
   return (

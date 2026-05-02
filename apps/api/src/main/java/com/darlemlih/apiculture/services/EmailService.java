@@ -62,4 +62,14 @@ public class EmailService {
                 "Dashboard: " + webBaseUrl + "/admin");
         mailSender.send(message);
     }
+
+    public void sendContactFormEmail(String name, String senderEmail, String subject, String body) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(fromEmail);
+        message.setReplyTo(senderEmail);
+        message.setSubject("[Contact] " + subject);
+        message.setText("Nouveau message de " + name + " <" + senderEmail + ">\n\n" + body);
+        mailSender.send(message);
+    }
 }

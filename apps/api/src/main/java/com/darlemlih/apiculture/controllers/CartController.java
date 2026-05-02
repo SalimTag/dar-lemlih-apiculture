@@ -2,6 +2,8 @@ package com.darlemlih.apiculture.controllers;
 
 import com.darlemlih.apiculture.dto.cart.*;
 import com.darlemlih.apiculture.services.CartService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/cart")
 @RequiredArgsConstructor
+@Tag(name = "Cart", description = "Authenticated cart operations")
 public class CartController {
 
     private final CartService cartService;

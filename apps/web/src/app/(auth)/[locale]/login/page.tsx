@@ -9,7 +9,7 @@ import { CookieBanner } from '@/components/layout/cookie-banner';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { SiteHeader } from '@/components/layout/site-header';
 
-export async function generateMetadata({ params }: { params: { locale: Locale } }): Promise<Metadata> {
+export async function generateMetadata(_props: { params: { locale: Locale } }): Promise<Metadata> {
   return {
     title: 'Sign in'
   };

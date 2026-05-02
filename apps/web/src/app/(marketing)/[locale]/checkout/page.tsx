@@ -76,7 +76,7 @@ export default function CheckoutPage() {
       const res = await api.post<{ orderNumber: string }>('/api/orders/checkout', payload);
       clearCart();
       router.push(`/${locale}/orders/${res.orderNumber}`);
-    } catch (err) {
+    } catch {
       // If API call fails (e.g. not authenticated), show a demo confirmation
       const demoOrderNumber = `ORD-DEMO-${Date.now()}`;
       clearCart();
@@ -89,7 +89,6 @@ export default function CheckoutPage() {
 
   const SHIPPING = 30;
   const subtotal = totalPrice();
-  const total = subtotal + SHIPPING;
 
   return (
     <Section>

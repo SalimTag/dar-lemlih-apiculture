@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { z } from 'zod';
@@ -76,7 +76,8 @@ function AuthTabs({ onAuthenticated }: AuthTabsProps) {
 
   const handleAuthSuccess = () => {
     onAuthenticated?.();
-    router.replace(redirectTo as any);
+    // redirectTo is always a string path — cast via unknown to satisfy typed routes
+    router.replace(redirectTo as `/${string}`);
   };
 
   /** Obtain a Spring Boot JWT and persist it in localStorage. Failures are non-blocking. */
@@ -230,13 +231,14 @@ export function AuthDialog() {
   const locale = useLocale();
   const [user, setUser] = useState<{ email?: string } | null>(null);
 
-  useState(() => {
+  useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUser(data.user));
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
     return () => subscription.unsubscribe();
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();

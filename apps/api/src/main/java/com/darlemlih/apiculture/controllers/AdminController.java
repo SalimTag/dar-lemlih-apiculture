@@ -1,10 +1,14 @@
 package com.darlemlih.apiculture.controllers;
 
 import com.darlemlih.apiculture.dto.admin.*;
+import com.darlemlih.apiculture.dto.order.OrderDto;
 import com.darlemlih.apiculture.dto.product.ProductDto;
 import com.darlemlih.apiculture.dto.product.ProductImageUploadResponse;
+import com.darlemlih.apiculture.entities.Order;
 import com.darlemlih.apiculture.entities.User;
+import com.darlemlih.apiculture.entities.enums.OrderStatus;
 import com.darlemlih.apiculture.entities.enums.UserRole;
+import com.darlemlih.apiculture.repositories.OrderRepository;
 import com.darlemlih.apiculture.repositories.UserRepository;
 import com.darlemlih.apiculture.services.AdminService;
 import com.darlemlih.apiculture.services.ProductService;
@@ -13,6 +17,8 @@ import com.darlemlih.apiculture.services.storage.FileStorageService;
 import com.darlemlih.apiculture.services.storage.FileUploadRequest;
 import com.darlemlih.apiculture.services.storage.FileUploadResult;
 import com.darlemlih.apiculture.services.storage.StorageException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +42,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
+@Tag(name = "Admin", description = "Admin-only operations")
 public class AdminController {
 
     private final AdminService adminService;
     private final ProductService productService;
+    private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileStorageService fileStorageService;
@@ -235,5 +243,50 @@ public class AdminController {
             return null;
         }
         return filename.substring(idx + 1).trim().toLowerCase();
+    }
+
+    // ── Admin Orders ──────────────────────────────────────────────────────────
+
+    @GetMapping("/orders")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "List all orders", description = "Returns a paginated list of all orders for the admin dashboard")
+    public ResponseEntity<Page<OrderDto>> listAllOrders(Pageable pageable) {
+        Page<OrderDto> page = orderRepository.findAll(pageable).map(this::toOrderDto);
+        return ResponseEntity.ok(page);
+    }
+
+    @PutMapping("/orders/{orderNumber}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Update order status")
+    public ResponseEntity<OrderDto> updateOrderStatus(
+            @PathVariable String orderNumber,
+            @RequestBody Map<String, String> body) {
+        Order order = orderRepository.findByOrderNumber(orderNumber)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+        String statusStr = body.get("status");
+        try {
+            order.setStatus(OrderStatus.valueOf(statusStr.toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid order status: " + statusStr);
+        }
+        orderRepository.save(order);
+        return ResponseEntity.ok(toOrderDto(order));
+    }
+
+    private OrderDto toOrderDto(Order order) {
+        return OrderDto.builder()
+                .id(order.getId())
+                .orderNumber(order.getOrderNumber())
+                .status(order.getStatus())
+                .subtotal(order.getSubtotal())
+                .shippingCost(order.getShippingCost())
+                .discount(order.getDiscount())
+                .total(order.getTotal())
+                .currency(order.getCurrency())
+                .paymentProvider(order.getPaymentProvider())
+                .trackingNumber(order.getTrackingNumber())
+                .createdAt(order.getCreatedAt())
+                .updatedAt(order.getUpdatedAt())
+                .build();
     }
 }
