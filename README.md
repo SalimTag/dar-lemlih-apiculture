@@ -4,42 +4,32 @@
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3-6DB33F?logo=spring&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-6DB33F?logo=spring&logoColor=white)](https://spring.io/projects/spring-boot)
 [![Supabase](https://img.shields.io/badge/Supabase-Auth-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com/)
 [![License](https://img.shields.io/badge/license-Proprietary-red.svg)](#license)
 
-> A premium, multilingual e-commerce platform for Moroccan terroir honey products. Built with Next.js 14, Tailwind CSS, Supabase Auth, and a Spring Boot REST API — with flawless Arabic RTL support.
+> A premium, multilingual e-commerce platform for Moroccan terroir honey products. Built with Next.js 14, Tailwind CSS, Supabase Auth, and a Spring Boot REST API — with flawless Arabic RTL support and a glassmorphism-inspired aesthetic.
 
 ---
 
 ## ✨ Features
 
 ### 🛍️ Storefront
+- **Awwwards-level design** — Glassmorphism, gradient overlays, micro-animations (Framer Motion), and scroll-triggered reveals.
+- **Trilingual support** — French 🇫🇷, English 🇬🇧, and Arabic 🇲🇦 with full RTL layout integration.
+- **Product catalog** — Dynamic grid with category filters, hover effects, and instant PDP navigation.
+- **Premium aesthetic** — Moroccan terroir palette (Honey Gold, Atlas Green, Terracotta) with fluid typography.
+- **Persistent Cart** — Client-side cart management powered by Zustand with local storage persistence.
 
-- **Awwwards-level design** — Glassmorphism, gradient overlays, micro-animations, scroll-triggered reveals
-- **Trilingual** — French 🇫🇷, English 🇬🇧, Arabic 🇲🇦 with full RTL layout
-- **Product catalog** — Dynamic grid with category filters, hover effects, quick-add to cart
-- **Premium aesthetic** — Moroccan terroir palette (honey gold, atlas green, terracotta), fluid typography
-- **Responsive** — Mobile-first with 44px touch targets, slide-out navigation panel
-
-### 📖 Content Pages
-
-- **Story** — Immersive 3-chapter brand narrative with alternating image/text layout
-- **Blog** — Seasonal recipes, terroir stories, wellness rituals
-- **Contact** — Form with loading states, toast feedback, info cards
+### 📖 Content & Marketing
+- **Story** — Immersive brand narrative with alternating layouts and high-quality terroir imagery.
+- **Blog (CMS)** — MDX-powered blog for seasonal recipes, honey stories, and wellness rituals (via Contentlayer).
+- **Contact** — Fully functional form with loading states, toast feedback (Sonner), and info cards.
 
 ### 🔒 Security & Auth
-
-- Supabase Auth (email/password, OAuth-ready)
-- Protected routes via Next.js middleware
-- Session management with server/client Supabase helpers
-
-### ♿ Accessibility
-
-- Semantic HTML5 with ARIA labels on all interactive elements
-- Keyboard-navigable with visible focus rings
-- 44px minimum touch targets on mobile devices
-- Screen reader support (`aria-pressed`, `aria-expanded`, `sr-only`)
+- **Supabase Auth** — Secure email/password authentication and session management.
+- **Protected routes** — Middleware-based access control for user accounts and checkout flows.
+- **Backend Security** — Stateless JWT authentication and Spring Security integration.
 
 ---
 
@@ -48,28 +38,28 @@
 ```
 dar-lemlih-apiculture/
 ├── apps/
-│   ├── api/                       # Spring Boot REST API
-│   │   ├── src/main/java/
-│   │   │   ├── auth/              # JWT authentication
-│   │   │   ├── catalog/           # Product & category CRUD
-│   │   │   ├── orders/            # Order processing
-│   │   │   └── config/            # CORS, OpenAPI, Security
-│   │   └── pom.xml
+│   ├── api/                       # Spring Boot 3.2 REST API (Java 21)
+│   │   ├── src/main/java/com/darlemlih/apiculture/
+│   │   │   ├── controllers/       # REST Endpoints (Catalog, Orders, Auth)
+│   │   │   ├── services/          # Business Logic
+│   │   │   ├── entities/          # JPA Domain Models
+│   │   │   ├── security/          # JWT & Spring Security
+│   │   │   └── config/            # CORS, OpenAPI (Swagger), AWS/Storage
+│   │   └── pom.xml                # Maven configuration
 │   │
-│   └── web/                       # Next.js 14 Frontend
+│   └── web/                       # Next.js 14 Frontend (App Router)
 │       ├── src/
-│       │   ├── app/               # App Router pages
+│       │   ├── app/               # Localized marketing & auth routes
 │       │   ├── components/
-│       │   │   ├── blocks/        # Hero, FeatureGrid, Steps, ProductCatalog
-│       │   │   ├── forms/         # AuthDialog, ContactForm
-│       │   │   ├── layout/        # Header, Footer, LocaleSwitcher
-│       │   │   └── ui/            # Button, Card, Badge, Skeleton, AnimateOnScroll
-│       │   ├── i18n/              # next-intl routing + FR/EN/AR dictionaries
-│       │   └── lib/               # Supabase helpers, hooks, utils
-│       └── tailwind.config.ts     # Design tokens & RTL variants
+│       │   │   ├── blocks/        # Hero, FeatureGrid, ProductCatalog
+│       │   │   ├── layout/        # SiteHeader, LocaleSwitcher, CartSheet
+│       │   │   └── ui/            # Shadcn UI primitives (radix-ui)
+│       │   ├── i18n/              # next-intl configuration & dictionaries
+│       │   └── lib/               # Zustand hooks, Supabase helpers, utils
+│       └── tailwind.config.ts     # Design tokens & RTL logical properties
 │
-├── docs/                          # Architecture guides
-└── infra/scripts/                 # Setup & seed scripts
+├── docs/                          # Architecture & agent guides
+└── infra/scripts/                 # Database migrations & utilities
 ```
 
 ---
@@ -77,142 +67,82 @@ dar-lemlih-apiculture/
 ## 🚀 Getting Started
 
 ### Prerequisites
-
 | Tool | Version | Purpose |
 |------|---------|---------|
-| Node.js | 20+ | Frontend |
-| Java | 21+ | Backend API |
-| MySQL | 8.0 | Database |
+| Node.js | 20+ | Frontend development |
+| Java | 21+ | Backend API development |
+| MySQL | 8.0 | Primary data store |
+| Supabase | - | Authentication & User management |
 
-### 1. Clone & Install
-
+### 1. Clone & Setup
 ```bash
 git clone https://github.com/salimtagemouati/dar-lemlih-apiculture.git
 cd dar-lemlih-apiculture
 ```
 
 ### 2. Configure Environment
-
 ```bash
+# Backend config
 cp apps/api/.env.example apps/api/.env
+
+# Frontend config
 cp apps/web/.env.example apps/web/.env
 ```
+*Note: Ensure you configure your Supabase keys and Database credentials in these files.*
 
-Edit both `.env` files with your own credentials. See `.env.example` files for the full list of variables.
-
-> ⚠️ **Never commit `.env` files.** They are gitignored by default.
-
-### 3. Start the Frontend
-
+### 3. Start Development Servers
+**Frontend:**
 ```bash
 cd apps/web
 npm install
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) — you'll be redirected to `/fr` by default.
-
-### 4. Start the API (optional)
-
+**Backend:**
 ```bash
 cd apps/api
 ./mvnw spring-boot:run
 ```
 
-API runs at [http://localhost:8080](http://localhost:8080) with Swagger UI at `/swagger-ui.html`.
-
 ---
 
 ## 🌐 Internationalization
+Full i18n support powered by `next-intl`.
 
-| Language | Code | Direction | Status |
-|----------|------|-----------|--------|
-| 🇫🇷 French | `fr` | LTR | ✅ Default |
-| 🇬🇧 English | `en` | LTR | ✅ Complete |
-| 🇲🇦 Arabic | `ar` | RTL | ✅ Complete |
+| Locale | Direction | Status |
+|--------|-----------|--------|
+| `fr` (French) | LTR | ✅ Primary |
+| `en` (English) | LTR | ✅ Complete |
+| `ar` (Arabic) | **RTL** | ✅ Complete |
 
-- RTL layout handled via `dir` attribute in root layout + Tailwind logical properties (`ps`, `pe`, `ms`, `me`, `start`, `end`)
-- Noto Sans Arabic loaded via `next/font` for proper Arabic rendering
-- 60+ translation keys per locale covering all pages and UI elements
-
----
-
-## 🎨 Design System
-
-The frontend implements a custom Moroccan terroir design language:
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| Honey Gold | `amber-400..600` | Primary CTAs, badges, accents |
-| Atlas Green | `atlas-400..700` | Nature/sustainability indicators |
-| Terracotta | `terracotta-400..700` | Warm accent highlights |
-| Sand | `sand-25..950` | Backgrounds, surfaces |
-| Charcoal | `charcoal-50..950` | Text, dark mode surfaces |
-
-**Key patterns:** Glassmorphism panels, gradient blob decorations, `ease-out-expo` transitions, IntersectionObserver scroll reveals, skeleton shimmer loaders.
+RTL layouts are handled using **Tailwind logical properties** (`ps-`, `me-`, `start-`, `end-`) ensuring a perfect mirrored experience for Arabic users without duplicating CSS.
 
 ---
 
-## 🧪 Testing
-
-```bash
-cd apps/web
-
-# Type checking
-npm run typecheck
-
-# Linting
-npm run lint
-
-# Unit tests (Vitest)
-npm run test
-
-# E2E tests (Playwright)
-npm run playwright:test
-```
-
----
-
-## 📦 Deployment
-
-### Frontend → Vercel
-
-1. Connect the repo to Vercel
-2. Set environment variables in Vercel dashboard
-3. Deploy — Vercel runs `npm install` → `npm run build` automatically
-
-### API → Railway / Render
-
-1. Connect the `apps/api` directory
-2. Configure env vars (DB, JWT, CORS)
-3. Set build command: `./mvnw package -DskipTests`
+## 🧪 Testing & Quality
+- **Type Safety**: Full TypeScript coverage across the frontend.
+- **Linting**: ESLint + Prettier for consistent code style.
+- **Unit Testing**: Vitest for frontend logic; JUnit 5 for backend services.
+- **E2E Testing**: Playwright for critical user journeys.
 
 ---
 
 ## 🗺️ Roadmap
-
-- [ ] Stripe checkout integration
-- [ ] Cart persistence with Zustand
-- [ ] Product detail pages with tasting notes
-- [ ] Admin dashboard (order management, product CRUD)
-- [ ] Blog CMS via Contentlayer MDX
-- [ ] WhatsApp order notifications
-- [ ] Mobile app (React Native)
+- [x] Persistent Shopping Cart (Zustand)
+- [x] Blog CMS integration (Contentlayer + MDX)
+- [x] Localized SEO & Metadata
+- [ ] Stripe Checkout integration (Web + API)
+- [ ] User Account Dashboard (Order history)
+- [ ] Admin Dashboard (Product & Inventory management)
+- [ ] WhatsApp Order Integration
+- [ ] Mobile Application (React Native / Expo)
 
 ---
 
 ## 📄 License
-
-© 2025 Dar Lemlih Apiculture. All rights reserved.
-
-This project is proprietary software. Unauthorized copying, distribution, or use is strictly prohibited.
+© 2026 Dar Lemlih Apiculture. All rights reserved. Proprietary software.
 
 ---
-
 <p align="center">
   Made with ❤️ in Morocco 🇲🇦 by <a href="https://github.com/salimtagemouati">Salim Tagemouati</a>
-</p>
-
-<p align="center">
-  <sub>🍯 From Atlas peaks to your table — rare Moroccan terroir honey, crafted with reverence</sub>
 </p>
