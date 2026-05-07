@@ -89,6 +89,12 @@ public class AuthService {
         return buildAuthResponse(user, newAccessToken, newRefreshToken);
     }
 
+    public UserDto getCurrentUser(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
+        return buildUserDto(user);
+    }
+
     @Transactional
     public void forgotPassword(String email) {
     User user = userRepository.findByEmail(email)
@@ -118,21 +124,23 @@ public class AuthService {
     }
 
     private AuthResponse buildAuthResponse(User user, String accessToken, String refreshToken) {
-        UserDto userDto = UserDto.builder()
+        return AuthResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .tokenType("Bearer")
+                .expiresIn(900L) // 15 minutes
+                .user(buildUserDto(user))
+                .build();
+    }
+
+    private UserDto buildUserDto(User user) {
+        return UserDto.builder()
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .role(user.getRole())
                 .emailVerified(user.getEmailVerified())
-                .build();
-
-        return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .tokenType("Bearer")
-                .expiresIn(900L) // 15 minutes
-                .user(userDto)
                 .build();
     }
 }

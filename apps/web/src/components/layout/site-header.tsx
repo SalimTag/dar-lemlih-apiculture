@@ -8,9 +8,10 @@ import { useTranslations } from 'next-intl';
 import { Menu, X, ShoppingBag } from 'lucide-react';
 import { LocaleSwitcher } from './locale-switcher';
 import { ThemeToggle } from './theme-toggle';
+import { CartSheet } from './cart-sheet';
+import { UserAccountNav } from './user-account-nav';
 import type { Locale } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
-import { AuthDialog } from '@/components/forms/auth-dialog';
 import { cn } from '@/lib/utils';
 
 const NAV_ITEMS: Array<{ key: string; href: string }> = [
@@ -91,14 +92,12 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             <LocaleSwitcher />
             <ThemeToggle />
 
-            {/* Cart button */}
-            <Button variant="ghost" size="icon" className="rounded-full" aria-label={t('cart')}>
-              <ShoppingBag className="h-5 w-5" />
-            </Button>
+            {/* Cart */}
+            <CartSheet />
 
             {/* Auth (desktop) */}
             <div className="hidden sm:block">
-              <AuthDialog />
+              <UserAccountNav />
             </div>
 
             {/* Mobile menu toggle */}
@@ -165,11 +164,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
         </nav>
 
         <div className="border-t border-sand-200/60 p-4 dark:border-charcoal-800/60">
-          <Button asChild className="w-full rounded-full">
-            <Link href={`/${locale}/login`} onClick={() => setMobileOpen(false)}>
-              {t('login')}
-            </Link>
-          </Button>
+          <UserAccountNav />
         </div>
       </div>
     </>

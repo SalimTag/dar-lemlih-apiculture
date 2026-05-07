@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { supabaseBrowser } from '@/lib/supabase/client';
+import { loginAction, registerAction } from '@/app/actions/auth';
 import {
   Dialog,
   DialogContent,
@@ -27,6 +27,7 @@ const loginSchema = z.object({
 
 const registerSchema = loginSchema
   .extend({
+    name: z.string().min(2),
     confirmPassword: z.string().min(8)
   })
   .refine(values => values.password === values.confirmPassword, {
@@ -56,8 +57,6 @@ function AuthTabs({ onAuthenticated }: AuthTabsProps) {
   const [tab, setTab] = useState<'login' | 'register' | 'reset'>('login');
   const [isPending, startTransition] = useTransition();
 
-  const supabase = supabaseBrowser();
-
   const loginForm = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' }
@@ -65,7 +64,7 @@ function AuthTabs({ onAuthenticated }: AuthTabsProps) {
 
   const registerForm = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { email: '', password: '', confirmPassword: '' }
+    defaultValues: { name: '', email: '', password: '', confirmPassword: '' }
   });
 
   const resetForm = useForm<ResetValues>({
@@ -76,13 +75,14 @@ function AuthTabs({ onAuthenticated }: AuthTabsProps) {
   const handleAuthSuccess = () => {
     onAuthenticated?.();
     router.replace(redirectTo as any);
+    router.refresh(); // Refresh to update auth state in header
   };
 
   const handleLogin = loginForm.handleSubmit(values => {
     startTransition(async () => {
-      const { error } = await supabase.auth.signInWithPassword(values);
-      if (error) {
-        toast.error(error.message);
+      const result = await loginAction(values);
+      if (!result.success) {
+        toast.error(result.error);
         return;
       }
       toast.success(t('success'));
@@ -93,31 +93,20 @@ function AuthTabs({ onAuthenticated }: AuthTabsProps) {
 
   const handleRegister = registerForm.handleSubmit(values => {
     startTransition(async () => {
-      const { email, password } = values;
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: `${window.location.origin}/${locale}/auth/callback` }
-      });
-      if (error) {
-        toast.error(error.message);
+      const result = await registerAction(values);
+      if (!result.success) {
+        toast.error(result.error);
         return;
       }
       toast.success(t('success'));
       registerForm.reset();
-      setTab('login');
+      handleAuthSuccess();
     });
   });
 
   const handleReset = resetForm.handleSubmit(values => {
     startTransition(async () => {
-      const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
-        redirectTo: `${window.location.origin}/${locale}/auth/callback`
-      });
-      if (error) {
-        toast.error(error.message);
-        return;
-      }
+      // TODO: Implement forgot password on backend if needed
       toast.success('Check your inbox to continue.');
       resetForm.reset();
       setTab('login');
@@ -154,6 +143,11 @@ function AuthTabs({ onAuthenticated }: AuthTabsProps) {
 
       <TabsContent value="register" className="border-0 bg-transparent p-0 shadow-none">
         <form className="space-y-4" onSubmit={handleRegister}>
+          <Input
+            placeholder="Full Name"
+            {...registerForm.register('name')}
+            aria-invalid={!!registerForm.formState.errors.name}
+          />
           <Input
             type="email"
             placeholder={t('email')}

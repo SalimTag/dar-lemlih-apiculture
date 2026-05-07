@@ -30,7 +30,7 @@ export function middleware(req: NextRequest) {
   const section = isLocale ? segments.at(1) : segments.at(0);
 
   if (section && protectedRoutes.has(section)) {
-    const hasSession = req.cookies.has('sb-darlemlih-auth');
+    const hasSession = req.cookies.has('dar-lemlih-token');
 
     if (!hasSession) {
       const loginUrl = new URL(`/${locale}/login`, req.url);

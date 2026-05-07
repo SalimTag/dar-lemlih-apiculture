@@ -10,6 +10,21 @@
     "login": "Se connecter",
     "logout": "Se déconnecter"
   },
+  "cart": {
+    "title": "Votre Collection",
+    "empty": "Votre panier est vide",
+    "emptySub": "Il semble que vous n'avez pas encore ajouté de miel à votre collection.",
+    "startShopping": "Commencer mes achats",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "shippingNote": "Calculé à la commande",
+    "total": "Total",
+    "checkout": "Commander",
+    "continue": "Continuer mes achats",
+    "item": "article",
+    "items": "articles",
+    "added": "{name} ajouté au panier"
+  },
   "hero": {
     "title": "Un miel marocain rare, façonné avec révérence.",
     "subtitle": "Des sommets de l'Atlas aux fleurs du désert, chaque jarre révèle un terroir préservé par nos apiculteurs artisans depuis des générations.",

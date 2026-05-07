@@ -10,6 +10,21 @@
     "login": "Sign in",
     "logout": "Sign out"
   },
+  "cart": {
+    "title": "Your Collection",
+    "empty": "Your cart is empty",
+    "emptySub": "Looks like you haven't added any jars to your collection yet.",
+    "startShopping": "Start shopping",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "shippingNote": "Calculated at checkout",
+    "total": "Total",
+    "checkout": "Checkout",
+    "continue": "Continue shopping",
+    "item": "item",
+    "items": "items",
+    "added": "{name} added to cart"
+  },
   "hero": {
     "title": "Rare Moroccan honey, crafted with reverence.",
     "subtitle": "From Atlas peaks to the desert bloom, every jar reveals a terroir preserved by artisan beekeepers for generations.",
