@@ -1,12 +1,14 @@
 package com.darlemlih.apiculture.payments;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Service
+@Profile("!prod")
 @ConditionalOnProperty(name = "payment.provider", havingValue = "mock")
 public class MockPaymentGateway implements PaymentGateway {
 
@@ -22,7 +24,11 @@ public class MockPaymentGateway implements PaymentGateway {
 
     @Override
     public boolean verifyWebhook(String signature, String payload) {
-        return true;
+        // Belt-and-suspenders: this method must never be called in production.
+        // The bean is profile-restricted to !prod, but if it ever is, fail loudly
+        // rather than silently approving every webhook.
+        throw new UnsupportedOperationException(
+                "MockPaymentGateway.verifyWebhook must not be invoked. Configure payment.provider=stripe.");
     }
 
     @Override

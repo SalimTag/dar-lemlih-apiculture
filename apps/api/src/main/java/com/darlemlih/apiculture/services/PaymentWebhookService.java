@@ -10,10 +10,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,40 +30,63 @@ public class PaymentWebhookService {
     private final EmailService emailService;
     private final ObjectMapper objectMapper;
 
-    public void processWebhook(String signature, String payload) {
+    /**
+     * Distinguishes "permanent" failures (bad signature, malformed payload, unknown order)
+     * from "transient" failures so the webhook controller can return 4xx vs 5xx
+     * to Stripe accordingly.
+     */
+    public static class WebhookSignatureException extends RuntimeException {
+        public WebhookSignatureException(String msg) { super(msg); }
+    }
+
+    /**
+     * Process a Stripe webhook from raw bytes (preserves byte-exact signature input).
+     */
+    public void processWebhook(String signature, byte[] payloadBytes) {
+        // Stripe's Java SDK currently parses payload as a string; we keep the bytes
+        // and decode for parsing while ensuring signature input is the original payload.
+        String payload = new String(payloadBytes, StandardCharsets.UTF_8);
+
+        if (!paymentGateway.verifyWebhook(signature, payload)) {
+            // Permanent failure: bad signature. Stripe should NOT retry.
+            throw new WebhookSignatureException("Invalid webhook signature");
+        }
+
+        JsonNode json;
         try {
-            // Verify webhook signature
-            if (!paymentGateway.verifyWebhook(signature, payload)) {
-                throw new RuntimeException("Invalid webhook signature");
-            }
+            json = objectMapper.readTree(payload);
+        } catch (Exception e) {
+            throw new WebhookSignatureException("Malformed webhook payload");
+        }
 
-            // Parse webhook payload
-            JsonNode json = objectMapper.readTree(payload);
-            String eventId = json.path("id").asText();
-            String eventType = json.path("type").asText();
+        String eventId = json.path("id").asText();
+        String eventType = json.path("type").asText();
 
-            // Check for duplicate events (idempotency)
-            if (webhookEventRepository.existsByEventId(eventId)) {
-                log.info("Webhook event already processed: {}", eventId);
-                return;
-            }
+        // Idempotency: rely on the unique constraint on webhook_events.event_id.
+        // The pre-check is racy under concurrent retries, so we attempt the insert
+        // first and treat DataIntegrityViolationException as "already processed".
+        WebhookEvent event = WebhookEvent.builder()
+                .provider("stripe")
+                .eventId(eventId)
+                .eventType(eventType)
+                .payload(payload)
+                .signature(signature)
+                .processed(false)
+                .build();
+        try {
+            webhookEventRepository.saveAndFlush(event);
+        } catch (DataIntegrityViolationException duplicate) {
+            log.info("Duplicate webhook event {} — skipping", eventId);
+            return;
+        }
 
-            // Store webhook event
-            WebhookEvent event = WebhookEvent.builder()
-                    .provider("stripe")
-                    .eventId(eventId)
-                    .eventType(eventType)
-                    .payload(payload)
-                    .signature(signature)
-                    .processed(false)
-                    .build();
-            webhookEventRepository.save(event);
-
-            // Process based on event type
+        try {
             switch (eventType) {
-                case "payment_intent.succeeded":
                 case "checkout.session.completed":
-                    handlePaymentSuccess(json);
+                    handleCheckoutSessionCompleted(json);
+                    break;
+                case "payment_intent.succeeded":
+                    handlePaymentIntentSucceeded(json);
                     break;
                 case "payment_intent.payment_failed":
                     handlePaymentFailure(json);
@@ -69,46 +95,90 @@ public class PaymentWebhookService {
                     log.info("Unhandled webhook event type: {}", eventType);
             }
 
-            // Mark event as processed
             event.setProcessed(true);
             event.setProcessedAt(LocalDateTime.now());
             webhookEventRepository.save(event);
-
         } catch (Exception e) {
-            log.error("Error processing webhook", e);
-            throw new RuntimeException("Webhook processing failed", e);
+            event.setError(e.getClass().getSimpleName() + ": " + e.getMessage());
+            webhookEventRepository.save(event);
+            log.error("Webhook handler {} failed for event {}", eventType, eventId, e);
+            throw e;
         }
     }
 
-    private void handlePaymentSuccess(JsonNode json) {
-        String paymentIntentId = json.path("data").path("object").path("payment_intent").asText();
-        
-        if (paymentIntentId == null || paymentIntentId.isEmpty()) {
-            paymentIntentId = json.path("data").path("object").path("id").asText();
+    /**
+     * Primary path: when a Checkout Session completes, look up the order by
+     * stripe_session_id (set when we created the session) and capture the now-known
+     * payment_intent id from the event payload.
+     */
+    private void handleCheckoutSessionCompleted(JsonNode json) {
+        JsonNode sessionObj = json.path("data").path("object");
+        String sessionId = sessionObj.path("id").asText();
+        String paymentIntentId = sessionObj.path("payment_intent").asText(null);
+
+        Optional<Order> orderOpt = orderRepository.findByStripeSessionId(sessionId);
+        if (orderOpt.isEmpty()) {
+            // Permanent: we don't know this session — log and ignore.
+            log.warn("checkout.session.completed for unknown stripe_session_id={}", sessionId);
+            return;
         }
 
-        final String finalPaymentIntentId = paymentIntentId;
-        Order order = orderRepository.findByPaymentIntentId(finalPaymentIntentId)
-                .orElseThrow(() -> new RuntimeException("Order not found for payment intent: " + finalPaymentIntentId));
+        Order order = orderOpt.get();
+        if (paymentIntentId != null && !paymentIntentId.isBlank()) {
+            order.setPaymentIntentId(paymentIntentId);
+        }
+        markOrderPaid(order);
+    }
 
+    /**
+     * Secondary path: payment_intent.succeeded. May arrive before or after
+     * checkout.session.completed. We look up the order by the now-stored
+     * payment_intent id. If the order is already PAID we skip side-effects.
+     */
+    private void handlePaymentIntentSucceeded(JsonNode json) {
+        String paymentIntentId = json.path("data").path("object").path("id").asText();
+
+        Optional<Order> orderOpt = orderRepository.findByPaymentIntentId(paymentIntentId);
+        if (orderOpt.isEmpty()) {
+            log.warn("payment_intent.succeeded for unknown payment_intent_id={}", paymentIntentId);
+            return;
+        }
+        markOrderPaid(orderOpt.get());
+    }
+
+    private void markOrderPaid(Order order) {
+        if (order.getStatus() == OrderStatus.PAID) {
+            log.debug("Order {} already PAID — skipping duplicate side effects", order.getOrderNumber());
+            return;
+        }
         order.setStatus(OrderStatus.PAID);
         orderRepository.save(order);
 
-        // Send confirmation email
-        emailService.sendOrderConfirmationEmail(order.getUser().getEmail(), order.getOrderNumber());
-        
+        try {
+            emailService.sendOrderConfirmationEmail(order.getUser().getEmail(), order.getOrderNumber());
+        } catch (Exception e) {
+            // Email failure must NOT roll back the PAID transition or trigger Stripe retries.
+            log.warn("Failed to send order confirmation email for {}: {}", order.getOrderNumber(), e.getMessage());
+        }
+
         log.info("Order {} marked as PAID", order.getOrderNumber());
     }
 
     private void handlePaymentFailure(JsonNode json) {
-        final String paymentIntentId = json.path("data").path("object").path("id").asText();
-        
-        Order order = orderRepository.findByPaymentIntentId(paymentIntentId)
-                .orElseThrow(() -> new RuntimeException("Order not found for payment intent: " + paymentIntentId));
+        String paymentIntentId = json.path("data").path("object").path("id").asText();
 
+        Optional<Order> orderOpt = orderRepository.findByPaymentIntentId(paymentIntentId);
+        if (orderOpt.isEmpty()) {
+            log.warn("payment_intent.payment_failed for unknown payment_intent_id={}", paymentIntentId);
+            return;
+        }
+
+        Order order = orderOpt.get();
+        if (order.getStatus() == OrderStatus.CANCELLED || order.getStatus() == OrderStatus.PAID) {
+            return;
+        }
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
-        
         log.info("Order {} marked as CANCELLED due to payment failure", order.getOrderNumber());
     }
 }

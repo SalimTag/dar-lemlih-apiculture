@@ -65,10 +65,18 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private Boolean isFeatured = false;
     
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
     private List<String> images = new ArrayList<>();
+
+    /**
+     * Optimistic locking discriminator used during stock decrement at checkout.
+     * See OrderService.persistOrder for the retry loop.
+     */
+    @jakarta.persistence.Version
+    @Column(nullable = false)
+    private Long version;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
