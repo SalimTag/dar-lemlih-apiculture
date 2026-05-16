@@ -51,6 +51,7 @@ public class SecurityConfig {
             .requestMatchers("/api/auth/me", "/api/auth/logout").authenticated()
             .requestMatchers("/api/products/**").permitAll()
             .requestMatchers("/api/categories/**").permitAll()
+            .requestMatchers("/api/contact").permitAll()
             .requestMatchers("/api/payments/webhook").permitAll()
             // Health and actuator endpoints
             .requestMatchers("/actuator/health").permitAll()

@@ -79,8 +79,8 @@ payment:
   stripe:
     secret-key: ${STRIPE_SECRET_KEY:}
     webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
-    success-url: ${PAYMENT_SUCCESS_URL:${app.web-base-url}/payment/success}
-    cancel-url: ${PAYMENT_CANCEL_URL:${app.web-base-url}/payment/cancel}
+    success-url: ${PAYMENT_SUCCESS_URL:${app.web-base-url}/checkout/success}
+    cancel-url: ${PAYMENT_CANCEL_URL:${app.web-base-url}/checkout/cancel}
 
 # Application Configuration
 app:

@@ -41,11 +41,11 @@ public class OrderService {
     @Value("${app.web-base-url}")
     private String webBaseUrl;
 
-    @Value("${payment.stripe.success-url:${app.web-base-url}/payment/success}")
-    private String successUrl;
+    @Value("${payment.stripe.success-url:${app.web-base-url}/checkout/success}")
+    private String successUrlBase;
 
-    @Value("${payment.stripe.cancel-url:${app.web-base-url}/payment/cancel}")
-    private String cancelUrl;
+    @Value("${payment.stripe.cancel-url:${app.web-base-url}/checkout/cancel}")
+    private String cancelUrlBase;
 
     @Value("${app.email.admin:${app.mail.admin:}}")
     private String adminEmail;
@@ -89,6 +89,12 @@ public class OrderService {
         // Stock check + decrement happens inside createOrderWithStockDecrement,
         // wrapped in an optimistic-lock retry loop.
         Order order = createOrderWithStockDecrement(user, cart, request);
+
+        // Build per-order success/cancel URLs so the frontend can show the
+        // confirmation for the right order.
+        String orderQuery = "?order=" + java.net.URLEncoder.encode(order.getOrderNumber(), java.nio.charset.StandardCharsets.UTF_8);
+        String successUrl = successUrlBase + (successUrlBase.contains("?") ? "&" : "") + orderQuery.substring(1);
+        String cancelUrl = cancelUrlBase;
 
         // Create payment session with stripe_session_id captured.
         PaymentSession session = paymentGateway.createCheckoutSession(
