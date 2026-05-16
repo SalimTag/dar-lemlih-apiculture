@@ -3,6 +3,7 @@ import { CheckCircle2 } from 'lucide-react';
 import { unstable_setRequestLocale } from 'next-intl/server';
 import { Section } from '@/components/blocks/section';
 import { Button } from '@/components/ui/button';
+import { CheckoutStepper } from '@/components/checkout/stepper';
 import type { Locale } from '@/i18n/routing';
 
 export const metadata = { title: 'Commande confirmée · Dar Lemlih' };
@@ -20,7 +21,11 @@ export default async function CheckoutSuccessPage({
 
   return (
     <Section>
-      <div className="mx-auto max-w-xl rounded-3xl border border-atlas-200/40 bg-atlas-50/40 p-10 text-center shadow-glass backdrop-blur dark:border-atlas-800/30 dark:bg-atlas-950/20">
+      <div className="mx-auto max-w-3xl">
+        <div className="mb-12">
+          <CheckoutStepper active="confirmation" />
+        </div>
+        <div className="rounded-3xl border border-atlas-200/40 bg-atlas-50/40 p-10 text-center shadow-glass backdrop-blur dark:border-atlas-800/30 dark:bg-atlas-950/20">
         <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-atlas-100 text-atlas-700 dark:bg-atlas-900/40 dark:text-atlas-300">
           <CheckCircle2 className="h-7 w-7" />
         </div>
@@ -51,6 +56,7 @@ export default async function CheckoutSuccessPage({
               Continuer mes achats
             </Link>
           </Button>
+        </div>
         </div>
       </div>
     </Section>

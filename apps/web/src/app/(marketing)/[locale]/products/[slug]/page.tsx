@@ -7,6 +7,7 @@ import { Star, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 import { Section } from '@/components/blocks/section';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { AddToCartButton } from './add-to-cart-button';
 import { getProductBySlug } from '@/lib/api/products';
 import { ApiClientError } from '@/lib/api/client';
@@ -155,6 +156,41 @@ export default async function ProductPage({ params }: { params: { locale: Locale
               )}
             </div>
           </div>
+
+          {/* Editorial accordion: Origine / Conservation / Informations nutritionnelles */}
+          <Accordion type="multiple" className="mt-6 border-t border-stone-200 dark:border-charcoal-800">
+            <AccordionItem value="origine">
+              <AccordionTrigger>Origine & terroir</AccordionTrigger>
+              <AccordionContent>
+                {product.origin
+                  ? `Récolté à ${product.origin}.`
+                  : 'Récolte artisanale au Maroc, dans le respect du terroir et des cycles saisonniers.'}
+                {product.ingredients ? (
+                  <>
+                    <br />
+                    <span className="text-xs uppercase tracking-wider text-stone-500">Composition&nbsp;:</span>{' '}
+                    {product.ingredients}
+                  </>
+                ) : null}
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="conservation">
+              <AccordionTrigger>Conservation</AccordionTrigger>
+              <AccordionContent>
+                À conserver à l&apos;abri de la lumière et de la chaleur. Ne pas réfrigérer —
+                la cristallisation naturelle peut être inversée par un bain-marie tiède
+                (max 40 °C) afin de préserver les enzymes vivantes.
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="nutrition">
+              <AccordionTrigger>Informations nutritionnelles</AccordionTrigger>
+              <AccordionContent>
+                Pour 100&nbsp;g&nbsp;: ~304&nbsp;kcal · Glucides 82&nbsp;g
+                (dont sucres 82&nbsp;g) · Protéines 0,3&nbsp;g · Sel
+                0&nbsp;g. Valeurs indicatives, fluctuent selon la flore butinée.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </div>
     </Section>

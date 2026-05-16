@@ -4,9 +4,7 @@ import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { AnimateOnScroll } from '@/components/ui/animate-on-scroll';
 import { useCart } from '@/lib/hooks/use-cart';
 import { cn } from '@/lib/utils';
@@ -20,6 +18,15 @@ interface ProductCatalogProps {
   categories: CategoryDto[];
 }
 
+/**
+ * Catalog grid styled in the spec's "Aesop meets Moroccan souk" register:
+ *   - Square images on radius-md, hover scale 1.03 over 0.4s.
+ *   - Category eyebrow (honey-700, uppercase, 11px, tracked).
+ *   - Product name in display serif, 20px.
+ *   - Price in display serif, 24px, honey-800.
+ *   - Outline button at rest, fills with honey-400 on hover.
+ *   - "Nouveau" / "Rupture de stock" badges in the top-left corner.
+ */
 export function ProductCatalog({ locale, initialProducts, categories }: ProductCatalogProps) {
   const t = useTranslations('products');
   const addItem = useCart(state => state.addItem);
@@ -31,13 +38,6 @@ export function ProductCatalog({ locale, initialProducts, categories }: ProductC
     return initialProducts.filter(p => p.categoryId === activeCategoryId);
   }, [initialProducts, activeCategoryId]);
 
-  const handleAddToCart = (product: ProductDto, e: React.MouseEvent) => {
-    // The card itself is wrapped in a Link; stop the click from navigating.
-    e.preventDefault();
-    e.stopPropagation();
-    void addItem(product.id, 1, localizedProductName(product, locale));
-  };
-
   const localizedCategoryLabel = (c: CategoryDto): string => {
     if (locale === 'ar' && c.nameAr) return c.nameAr;
     if (locale === 'en' && c.nameEn) return c.nameEn;
@@ -45,16 +45,16 @@ export function ProductCatalog({ locale, initialProducts, categories }: ProductC
   };
 
   return (
-    <div className="space-y-8">
-      {/* Filter chips — driven by real categories */}
+    <div className="space-y-12">
+      {/* Filter chips */}
       <div className="flex flex-wrap items-center justify-center gap-2">
         <button
           onClick={() => setActiveCategoryId('all')}
           className={cn(
-            'rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-300',
+            'rounded-sm px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300',
             activeCategoryId === 'all'
-              ? 'bg-amber-500 text-white shadow-card'
-              : 'bg-white/60 text-charcoal-600 hover:bg-amber-50 hover:text-amber-700 dark:bg-charcoal-800/60 dark:text-charcoal-300 dark:hover:bg-charcoal-700'
+              ? 'bg-stone-900 text-stone-50 shadow-sm dark:bg-honey-400 dark:text-stone-900'
+              : 'bg-transparent text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-honey-200'
           )}
         >
           {t('filter.all')}
@@ -64,101 +64,103 @@ export function ProductCatalog({ locale, initialProducts, categories }: ProductC
             key={category.id}
             onClick={() => setActiveCategoryId(category.id)}
             className={cn(
-              'rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-300',
+              'rounded-sm px-5 py-2.5 text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300',
               activeCategoryId === category.id
-                ? 'bg-amber-500 text-white shadow-card'
-                : 'bg-white/60 text-charcoal-600 hover:bg-amber-50 hover:text-amber-700 dark:bg-charcoal-800/60 dark:text-charcoal-300 dark:hover:bg-charcoal-700'
+                ? 'bg-stone-900 text-stone-50 shadow-sm dark:bg-honey-400 dark:text-stone-900'
+                : 'bg-transparent text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-honey-200'
             )}
           >
             {localizedCategoryLabel(category)}
-            <span className="ms-1.5 text-[10px] opacity-60">({category.productCount})</span>
+            <span className="ms-1.5 text-[9px] opacity-50">({category.productCount})</span>
           </button>
         ))}
       </div>
 
       {filtered.length === 0 ? (
-        <div className="mx-auto max-w-md rounded-2xl border border-white/15 bg-white/60 p-10 text-center text-sm text-charcoal-500 dark:border-white/8 dark:bg-charcoal-900/50 dark:text-charcoal-400">
+        <div className="mx-auto max-w-md rounded-md border border-stone-200 bg-white/60 p-10 text-center text-sm text-stone-500 dark:border-charcoal-800 dark:bg-charcoal-900/50 dark:text-stone-400">
           {t('outOfStock')}
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((product, index) => {
             const name = localizedProductName(product, locale);
             const image = resolveImageUrl(product.images?.[0]);
             const outOfStock = product.stockQuantity <= 0;
+
             return (
-              <AnimateOnScroll key={product.id} animation="fade-up" delay={index * 80}>
-                <div className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/15 bg-white/60 shadow-glass backdrop-blur-sm transition-all duration-500 hover:shadow-elevated hover:-translate-y-1 dark:border-white/8 dark:bg-charcoal-900/50">
-                  {/* Card body is the link */}
-                  <Link href={`/${locale}/products/${product.slug}` as `/${string}`} className="flex flex-col">
-                    <div className="relative aspect-[4/5] overflow-hidden">
-                      <Image
-                        src={image}
-                        alt={name}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-charcoal-900/30 via-transparent to-transparent" />
+              <AnimateOnScroll key={product.id} animation="fade-up" delay={index * 60}>
+                <article className="group flex flex-col">
+                  {/* Square image */}
+                  <Link
+                    href={`/${locale}/products/${product.slug}` as `/${string}`}
+                    className="relative block aspect-square overflow-hidden rounded-md bg-stone-100 dark:bg-charcoal-800 focus-ring"
+                  >
+                    <Image
+                      src={image}
+                      alt={name}
+                      fill
+                      className="object-cover transition-transform duration-[400ms] ease-out group-hover:scale-[1.03]"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
 
-                      <div className="absolute start-4 top-4 flex flex-col gap-1.5">
-                        {product.isFeatured && (
-                          <Badge variant="default" className="rounded-full shadow-lg">
-                            ★ Featured
-                          </Badge>
-                        )}
-                        {outOfStock && (
-                          <Badge variant="destructive" className="rounded-full shadow-lg">
-                            {t('outOfStock')}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex flex-1 flex-col gap-3 p-5">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <h3 className="font-display text-lg font-semibold text-charcoal-900 dark:text-amber-50">
-                            {name}
-                          </h3>
-                          {product.weightGrams ? (
-                            <p className="text-xs text-charcoal-500 dark:text-charcoal-400">
-                              {product.weightGrams}g · {product.origin ?? ''}
-                            </p>
-                          ) : (
-                            <p className="text-xs text-charcoal-500 dark:text-charcoal-400">
-                              {product.origin ?? product.categoryName ?? ''}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="mt-auto flex items-center justify-between pt-2">
-                        <span className="font-display text-2xl font-bold text-charcoal-900 dark:text-amber-50">
-                          {formatPriceMAD(product.price, locale)}
+                    {/* Status badges (top-left) */}
+                    <div className="absolute start-3 top-3 flex flex-col gap-1.5">
+                      {product.isFeatured && !outOfStock && (
+                        <span className="inline-flex items-center rounded-sm bg-honey-400 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-stone-900">
+                          Nouveau
                         </span>
-                        {product.categoryName && (
-                          <Badge variant="glass" className="text-[10px]">
-                            {product.categoryName}
-                          </Badge>
-                        )}
-                      </div>
+                      )}
+                      {outOfStock && (
+                        <span className="inline-flex items-center rounded-sm bg-stone-900/85 px-2 py-1 text-[10px] font-semibold uppercase tracking-wider text-stone-50 backdrop-blur">
+                          Rupture de stock
+                        </span>
+                      )}
                     </div>
                   </Link>
 
-                  {/* Quick add button — outside the link to avoid nested-link semantics */}
-                  <div className="absolute bottom-16 end-4 z-10 opacity-0 transition-all duration-300 group-hover:opacity-100">
+                  {/* Body */}
+                  <div className="mt-5 flex flex-col gap-3">
+                    {/* Category eyebrow */}
+                    {product.categoryName && (
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-honey-700 dark:text-honey-400">
+                        {product.categoryName}
+                      </p>
+                    )}
+
+                    <h3 className="font-display text-[20px] leading-tight text-stone-900 dark:text-stone-50">
+                      <Link
+                        href={`/${locale}/products/${product.slug}` as `/${string}`}
+                        className="transition-colors hover:text-honey-700"
+                      >
+                        {name}
+                      </Link>
+                    </h3>
+
+                    {product.origin && (
+                      <p className="text-sm leading-relaxed text-stone-500 dark:text-stone-400">
+                        {product.origin}
+                        {product.weightGrams ? ` · ${product.weightGrams} g` : ''}
+                      </p>
+                    )}
+
+                    <div className="mt-1 flex items-center justify-between">
+                      <span className="font-display text-[24px] leading-none text-honey-800 dark:text-honey-300">
+                        {formatPriceMAD(product.price, locale)}
+                      </span>
+                    </div>
+
                     <Button
-                      size="icon"
-                      className="h-12 w-12 rounded-full shadow-elevated"
+                      type="button"
+                      variant="outline"
+                      className="mt-2 w-full rounded-sm border-stone-300 text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-700 hover:border-honey-400 hover:bg-honey-400 hover:text-stone-900 dark:border-charcoal-700 dark:text-stone-300 dark:hover:bg-honey-400 dark:hover:text-stone-900"
                       disabled={outOfStock || loading}
-                      onClick={e => handleAddToCart(product, e)}
-                      aria-label={t('addToCart')}
+                      onClick={() => void addItem(product.id, 1, name)}
+                      aria-label={`${t('addToCart')} — ${name}`}
                     >
-                      <ShoppingBag className="h-5 w-5" />
+                      {outOfStock ? t('outOfStock') : t('addToCart')}
                     </Button>
                   </div>
-                </div>
+                </article>
               </AnimateOnScroll>
             );
           })}

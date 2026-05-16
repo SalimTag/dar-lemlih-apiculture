@@ -28,15 +28,13 @@ export default async function LocaleHomePage({ params }: { params: { locale: Loc
 
   return (
     <div className="space-y-0">
-      {/* Hero */}
-      <Section>
-        <Hero locale={locale} />
-      </Section>
+      {/* Hero — full-bleed, no Section wrapper so the bg image touches the viewport edge */}
+      <Hero locale={locale} />
 
       {/* USP Features */}
       <Section id="usp" background="warm">
         <div className="mb-12 text-center">
-          <h2 className="font-display text-heading text-charcoal-900 dark:text-amber-50">
+          <h2 className="font-display text-heading text-stone-900 dark:text-amber-50">
             {tCta('story')}
           </h2>
         </div>

@@ -40,6 +40,12 @@ export function CartSheet() {
   const total = cart?.total ?? 0;
   const shippingCost = cart?.shippingCost ?? 0;
 
+  // Free-shipping threshold (kept client-side for display only — backend is
+  // still authoritative on what gets charged).
+  const FREE_SHIPPING_THRESHOLD = 500;
+  const freeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+  const remainingForFree = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+
   if (!mounted) return null;
 
   return (
@@ -177,10 +183,15 @@ export function CartSheet() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-charcoal-600 dark:text-charcoal-400">{t('cart.shipping')}</span>
-                  <span className="text-charcoal-500">
-                    {shippingCost > 0 ? formatPriceMAD(shippingCost, locale) : t('cart.shippingNote')}
+                  <span className={freeShipping ? 'font-semibold text-atlas-600 dark:text-atlas-400' : 'text-charcoal-500'}>
+                    {freeShipping ? 'Gratuit' : (shippingCost > 0 ? formatPriceMAD(shippingCost, locale) : t('cart.shippingNote'))}
                   </span>
                 </div>
+                {!freeShipping && remainingForFree > 0 && (
+                  <p className="rounded-lg bg-honey-50/60 px-3 py-2 text-[11px] text-honey-800 dark:bg-honey-900/20 dark:text-honey-200">
+                    Plus que {formatPriceMAD(remainingForFree, locale)} pour la livraison gratuite.
+                  </p>
+                )}
               </div>
               <Separator />
               <div className="flex justify-between text-lg font-bold">

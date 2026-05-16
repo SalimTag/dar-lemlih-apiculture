@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { Section } from '@/components/blocks/section';
 import { CheckoutForm } from './checkout-form';
+import { CheckoutStepper } from '@/components/checkout/stepper';
 import { getCart } from '@/lib/api/cart';
 import { ApiClientError } from '@/lib/api/client';
 import { getSessionAction } from '@/app/actions/auth';
@@ -34,13 +35,17 @@ export default async function CheckoutPage({ params }: { params: { locale: Local
     <Section>
       <div className="mx-auto max-w-5xl">
         <header className="mb-10 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.5em] text-amber-600 dark:text-amber-400">
+          <p className="text-xs font-semibold uppercase tracking-[0.5em] text-honey-700 dark:text-honey-300">
             Dar Lemlih
           </p>
-          <h1 className="mt-3 font-display text-display text-charcoal-900 dark:text-amber-50">
+          <h1 className="mt-3 font-display text-display text-stone-900 dark:text-amber-50">
             {t('checkout')}
           </h1>
         </header>
+
+        <div className="mb-12">
+          <CheckoutStepper active="shipping" />
+        </div>
 
         {cart.items.length === 0 ? (
           <div className="mx-auto max-w-md rounded-3xl border border-amber-200/40 bg-amber-50/60 p-10 text-center text-sm text-amber-800 dark:border-amber-800/40 dark:bg-amber-950/30 dark:text-amber-200">
