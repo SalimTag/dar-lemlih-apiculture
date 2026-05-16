@@ -25,7 +25,7 @@ export class ApiClientError extends Error {
   }
 }
 
-type Json = Record<string, unknown> | unknown[];
+type Json = unknown;
 
 interface FetchOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
