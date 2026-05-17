@@ -14,7 +14,7 @@ export default async function OrderDetailPage({
 }: {
   params: { locale: Locale; orderNumber: string };
 }) {
-  let order;
+  let order: Awaited<ReturnType<typeof getOrder>>;
   try {
     order = await getOrder(decodeURIComponent(params.orderNumber));
   } catch (e) {

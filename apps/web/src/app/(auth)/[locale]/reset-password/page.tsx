@@ -17,14 +17,15 @@ export default async function ResetPasswordPage({
   searchParams
 }: {
   params: { locale: Locale };
-  searchParams: { token?: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const { locale } = params;
   if (!locales.includes(locale)) notFound();
   unstable_setRequestLocale(locale);
 
   const messages = await getMessages();
-  const token = searchParams.token ?? '';
+  const tokenRaw = searchParams.token;
+  const token = typeof tokenRaw === 'string' ? tokenRaw : '';
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>

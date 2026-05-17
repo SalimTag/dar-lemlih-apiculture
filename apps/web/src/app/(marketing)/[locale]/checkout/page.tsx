@@ -21,7 +21,7 @@ export default async function CheckoutPage({ params }: { params: { locale: Local
 
   const t = await getTranslations({ locale, namespace: 'cart' });
 
-  let cart;
+  let cart: Awaited<ReturnType<typeof getCart>>;
   try {
     cart = await getCart();
   } catch (e) {

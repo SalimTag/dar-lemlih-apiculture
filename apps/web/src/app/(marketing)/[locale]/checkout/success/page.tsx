@@ -13,11 +13,12 @@ export default async function CheckoutSuccessPage({
   searchParams
 }: {
   params: { locale: Locale };
-  searchParams: { order?: string; session_id?: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
   unstable_setRequestLocale(params.locale);
 
-  const orderNumber = searchParams.order;
+  const orderRaw = searchParams.order;
+  const orderNumber = typeof orderRaw === 'string' ? orderRaw : undefined;
 
   return (
     <Section>

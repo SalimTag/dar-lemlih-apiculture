@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: { locale: Locale; s
 }
 
 export default async function ProductPage({ params }: { params: { locale: Locale; slug: string } }) {
-  let product;
+  let product: Awaited<ReturnType<typeof getProductBySlug>>;
   try {
     product = await getProductBySlug(params.slug);
   } catch (e) {
