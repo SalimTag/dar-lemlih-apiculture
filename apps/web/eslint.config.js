@@ -27,7 +27,7 @@ export default [
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        projectService: { allowDefaultProject: true },
+        projectService: { allowDefaultProject: ['**/*.{ts,tsx}'] },
         tsconfigRootDir: __dirname
       },
       globals: {
