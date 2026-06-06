@@ -27,9 +27,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class OrderService {
+
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private OrderService self;
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
@@ -50,10 +53,13 @@ public class OrderService {
     @Value("${app.email.admin:${app.mail.admin:}}")
     private String adminEmail;
 
-    private static final BigDecimal SHIPPING_COST = new BigDecimal("30.00");
+    @Value("${app.shipping-cost:30.00}")
+    private BigDecimal shippingCost;
+
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final int MAX_ORDER_NUMBER_RETRIES = 5;
 
+    @Transactional(readOnly = true)
     public Page<OrderDto> getUserOrders(String userEmail, Pageable pageable) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
@@ -76,6 +82,23 @@ public class OrderService {
     }
 
     public CheckoutResponse checkout(String userEmail, CheckoutRequest request) {
+        OptimisticLockingFailureException lastError = null;
+        for (int attempt = 0; attempt < 3; attempt++) {
+            try {
+                return self.performCheckout(userEmail, request);
+            } catch (OptimisticLockingFailureException e) {
+                lastError = e;
+                log.debug("Optimistic-lock conflict on checkout (attempt {}): {}", attempt + 1, e.getMessage());
+                try { Thread.sleep(50); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); break; }
+            }
+        }
+        throw new ConflictException("STOCK_CONFLICT",
+                "Could not finalize the order — stock changed during checkout. Please retry. (" +
+                        (lastError != null ? lastError.getMessage() : "unknown") + ")");
+    }
+
+    @Transactional
+    public CheckoutResponse performCheckout(String userEmail, CheckoutRequest request) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new NotFoundException("USER_NOT_FOUND", "User not found"));
 
@@ -86,9 +109,8 @@ public class OrderService {
             throw new BadRequestException("CART_EMPTY", "Cart is empty");
         }
 
-        // Stock check + decrement happens inside createOrderWithStockDecrement,
-        // wrapped in an optimistic-lock retry loop.
-        Order order = createOrderWithStockDecrement(user, cart, request);
+        // Call persistOrder directly (no inner retry loop)
+        Order order = persistOrder(user, cart, request);
 
         // Build per-order success/cancel URLs so the frontend can show the
         // confirmation for the right order.
@@ -111,9 +133,9 @@ public class OrderService {
         }
         orderRepository.save(order);
 
-        // Clear cart
+        // Clear cart with custom JPQL bulk delete to prevent N+1 query amplification
+        cartRepository.clearCartItems(cart.getId());
         cart.getItems().clear();
-        cartRepository.save(cart);
 
         // Order confirmation is sent by the webhook handler when payment succeeds, NOT here.
         // Admin notification of "new (pending) order" is fine to send synchronously.
@@ -132,22 +154,6 @@ public class OrderService {
                 .build();
     }
 
-    private Order createOrderWithStockDecrement(User user, Cart cart, CheckoutRequest request) {
-        OptimisticLockingFailureException lastError = null;
-        for (int attempt = 0; attempt < 3; attempt++) {
-            try {
-                return persistOrder(user, cart, request);
-            } catch (OptimisticLockingFailureException e) {
-                lastError = e;
-                log.debug("Optimistic-lock conflict on stock decrement (attempt {}): {}", attempt + 1, e.getMessage());
-                try { Thread.sleep(50); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); break; }
-            }
-        }
-        throw new ConflictException("STOCK_CONFLICT",
-                "Could not finalize the order — stock changed during checkout. Please retry. (" +
-                        (lastError != null ? lastError.getMessage() : "unknown") + ")");
-    }
-
     private Order persistOrder(User user, Cart cart, CheckoutRequest request) {
         // Re-read each cart product fresh and check stock atomically with the version field.
         for (CartItem item : cart.getItems()) {
@@ -161,7 +167,7 @@ public class OrderService {
         }
 
         BigDecimal subtotal = cart.getTotal();
-        BigDecimal total = subtotal.add(SHIPPING_COST);
+        BigDecimal total = subtotal.add(shippingCost);
 
         ShippingAddressDto src = request.getShippingAddress();
         ShippingAddress shippingAddress = ShippingAddress.builder()
@@ -184,7 +190,7 @@ public class OrderService {
                     .user(user)
                     .status(OrderStatus.PENDING)
                     .subtotal(subtotal)
-                    .shippingCost(SHIPPING_COST)
+                    .shippingCost(shippingCost)
                     .discount(BigDecimal.ZERO)
                     .total(total)
                     .currency("MAD")

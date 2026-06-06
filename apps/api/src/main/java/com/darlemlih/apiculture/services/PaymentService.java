@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -103,6 +105,7 @@ public class PaymentService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public PaymentSessionResponse getPaymentStatus(String sessionId) {
         Order order = orderRepository.findByStripeSessionId(sessionId)
                 .orElseThrow(() -> new NotFoundException("SESSION_NOT_FOUND", "Unknown payment session"));
@@ -132,6 +135,12 @@ public class PaymentService {
         if (refundAmount.signum() <= 0 || refundAmount.compareTo(order.getTotal()) > 0) {
             throw new BadRequestException("INVALID_AMOUNT",
                     "amount must be positive and not exceed the order total");
+        }
+
+        // Only orders that have been PAID can be refunded.
+        if (order.getStatus() != OrderStatus.PAID) {
+            throw new BadRequestException("ORDER_NOT_REFUNDABLE",
+                    "Order is in status " + order.getStatus() + " and cannot be refunded");
         }
 
         RefundResult result = paymentGateway.refund(paymentIntentId, refundAmount);
@@ -165,7 +174,6 @@ public class PaymentService {
             return Optional.empty();
         }
     }
-
     /**
      * Resolve and allow-list redirect URLs. If the caller provided a URL it must
      * start with one of the configured app URLs; otherwise we fall back to the
@@ -175,13 +183,46 @@ public class PaymentService {
         if (providedUrl == null || providedUrl.isBlank()) {
             return fallback;
         }
-        List<String> allowedPrefixes = List.of(webBaseUrl, apiBaseUrl);
-        for (String prefix : allowedPrefixes) {
-            if (prefix != null && !prefix.isBlank() && providedUrl.startsWith(prefix)) {
-                return providedUrl;
+        try {
+            URI providedUri = new URI(providedUrl);
+            if (!isHttpUrl(providedUri) || providedUri.getUserInfo() != null) {
+                throw new BadRequestException("REDIRECT_NOT_ALLOWED", "Invalid protocol in redirect URL");
             }
+
+            List<String> allowedUrls = List.of(webBaseUrl, apiBaseUrl);
+            for (String allowed : allowedUrls) {
+                if (allowed != null && !allowed.isBlank()) {
+                    URI allowedUri = new URI(allowed);
+                    if (isSameOrigin(providedUri, allowedUri)) {
+                        return providedUrl;
+                    }
+                }
+            }
+        } catch (URISyntaxException e) {
+            throw new BadRequestException("REDIRECT_NOT_ALLOWED", "Malformed redirect URL");
         }
         throw new BadRequestException("REDIRECT_NOT_ALLOWED",
-                fieldName + " must start with one of the configured app URLs");
+                fieldName + " must match one of the configured app URLs");
+    }
+
+    private boolean isSameOrigin(URI providedUri, URI allowedUri) {
+        return isHttpUrl(allowedUri)
+                && providedUri.getScheme().equalsIgnoreCase(allowedUri.getScheme())
+                && providedUri.getHost() != null
+                && providedUri.getHost().equalsIgnoreCase(allowedUri.getHost())
+                && effectivePort(providedUri) == effectivePort(allowedUri);
+    }
+
+    private boolean isHttpUrl(URI uri) {
+        return uri.getScheme() != null
+                && uri.getHost() != null
+                && (uri.getScheme().equalsIgnoreCase("http") || uri.getScheme().equalsIgnoreCase("https"));
+    }
+
+    private int effectivePort(URI uri) {
+        if (uri.getPort() != -1) {
+            return uri.getPort();
+        }
+        return uri.getScheme().equalsIgnoreCase("https") ? 443 : 80;
     }
 }

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Package } from 'lucide-react';
+import { setRequestLocale } from 'next-intl/server';
 import { getMyOrders } from '@/lib/api/orders';
 import { ApiClientError } from '@/lib/api/client';
 import { OrderStatusBadge } from '@/components/account/order-status-badge';
@@ -7,9 +8,13 @@ import { formatDate, formatPriceMAD } from '@/lib/format';
 import type { Locale } from '@/i18n/routing';
 import type { OrderDto } from '@/lib/api/types';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = { title: 'Mes commandes · Dar Lemlih' };
 
 export default async function OrdersPage({ params }: { params: { locale: Locale } }) {
+  setRequestLocale(params.locale);
+
   let orders: OrderDto[] = [];
   try {
     const page = await getMyOrders(0, 50);

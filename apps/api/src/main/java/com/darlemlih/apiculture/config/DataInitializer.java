@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 /**
  * Seeds development user accounts so the dev environment has a working admin/customer login.
  *
- * <p>Profile-restricted to {@code dev} so it never runs in production. Passwords are
+ * <p>Profile-restricted to {@code dev} and {@code portfolio} so it never runs in production. Passwords are
  * generated at runtime with the {@link PasswordEncoder} (no hardcoded BCrypt hashes
  * in source control) and the default password is sourced from the {@code SEED_DEFAULT_PASSWORD}
  * environment variable, falling back to a development-only default.
  */
 @Component
-@Profile("dev")
+@Profile("dev | portfolio")
 @RequiredArgsConstructor
 @Slf4j
 public class DataInitializer implements CommandLineRunner {

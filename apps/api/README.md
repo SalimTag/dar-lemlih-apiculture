@@ -48,6 +48,7 @@ The API listens on `http://localhost:8080`. The `dev` profile runs `DataInitiali
 | Profile | Datasource | Flyway | Notes |
 |---|---|---|---|
 | `dev` (default) | MySQL via `DB_URL` | `db/migration` + `db/migration-dev` | Mock or real Stripe; Swagger UI on. `DataInitializer` seeds dev users. |
+| `portfolio` | Persistent H2 file via `PORTFOLIO_DB_PATH` | disabled (`ddl-auto: update`) | Public demo profile: mock checkout, demo users/catalog seeded at runtime, Swagger off. |
 | `prod` | MySQL via env | `db/migration` only | Stripe forced (`PaymentConfig` fails fast on `mock`); Swagger off; PII-safe logging. |
 | `dev-local` | localhost MySQL | both | Same as `dev` but pinned to `dar/lemlih` credentials. |
 | `docker` | env-driven | `db/migration` | For Docker Compose stacks. |

@@ -22,23 +22,29 @@ export async function getProducts(query: ProductsQuery = {}): Promise<PageRespon
       size: query.size ?? 24,
       sort: query.sort
     },
-    anonymous: true
+    anonymous: true,
+    next: { revalidate: 300 }
   });
 }
 
 export async function getProductBySlug(slug: string): Promise<ProductDto> {
   return apiFetch<ProductDto>(`/api/products/${encodeURIComponent(slug)}`, {
-    anonymous: true
+    anonymous: true,
+    next: { revalidate: 300 }
   });
 }
 
 export async function getFeaturedProducts(size = 6): Promise<PageResponse<ProductDto>> {
   return apiFetch<PageResponse<ProductDto>>('/api/products/featured', {
     query: { size },
-    anonymous: true
+    anonymous: true,
+    next: { revalidate: 300 }
   });
 }
 
 export async function getCategories(): Promise<CategoryDto[]> {
-  return apiFetch<CategoryDto[]>('/api/categories', { anonymous: true });
+  return apiFetch<CategoryDto[]>('/api/categories', {
+    anonymous: true,
+    next: { revalidate: 300 }
+  });
 }

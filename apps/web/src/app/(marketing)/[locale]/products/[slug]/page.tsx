@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Star, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 import { Section } from '@/components/blocks/section';
 import { Badge } from '@/components/ui/badge';
@@ -19,6 +19,8 @@ import {
 } from '@/lib/format';
 import type { Locale } from '@/i18n/routing';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: { params: { locale: Locale; slug: string } }): Promise<Metadata> {
   try {
     const product = await getProductBySlug(params.slug);
@@ -32,6 +34,8 @@ export async function generateMetadata({ params }: { params: { locale: Locale; s
 }
 
 export default async function ProductPage({ params }: { params: { locale: Locale; slug: string } }) {
+  setRequestLocale(params.locale);
+
   let product: Awaited<ReturnType<typeof getProductBySlug>>;
   try {
     product = await getProductBySlug(params.slug);

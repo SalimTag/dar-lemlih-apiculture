@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
 import { Hero } from '@/components/blocks/hero';
 import { FeatureGrid } from '@/components/blocks/feature-grid';
@@ -23,6 +23,8 @@ export async function generateMetadata({ params }: { params: { locale: Locale } 
 
 export default async function LocaleHomePage({ params }: { params: { locale: Locale } }) {
   const { locale } = params;
+  setRequestLocale(locale);
+
   const tCta = await getTranslations({ locale, namespace: 'cta' });
   const tCommon = await getTranslations({ locale, namespace: 'common' });
 

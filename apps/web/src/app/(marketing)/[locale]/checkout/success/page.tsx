@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { CheckCircle2 } from 'lucide-react';
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { Section } from '@/components/blocks/section';
 import { Button } from '@/components/ui/button';
 import { CheckoutStepper } from '@/components/checkout/stepper';
@@ -15,7 +15,7 @@ export default async function CheckoutSuccessPage({
   params: { locale: Locale };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  unstable_setRequestLocale(params.locale);
+  setRequestLocale(params.locale);
 
   const orderRaw = searchParams.order;
   const orderNumber = typeof orderRaw === 'string' ? orderRaw : undefined;

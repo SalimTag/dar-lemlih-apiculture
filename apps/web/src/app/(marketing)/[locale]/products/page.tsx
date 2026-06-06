@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
 import { Section } from '@/components/blocks/section';
 import { ProductCatalog } from '@/components/blocks/product-catalog';
 import { getCategories, getProducts } from '@/lib/api/products';
 import { ApiClientError } from '@/lib/api/client';
 import type { CategoryDto, ProductDto } from '@/lib/api/types';
+
+export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: { locale: Locale } }): Promise<Metadata> {
   const t = await getTranslations({ locale: params.locale, namespace: 'products' });
@@ -31,6 +33,8 @@ async function loadCatalog(): Promise<{ products: ProductDto[]; categories: Cate
 }
 
 export default async function ProductsPage({ params }: { params: { locale: Locale } }) {
+  setRequestLocale(params.locale);
+
   const t = await getTranslations({ locale: params.locale, namespace: 'products' });
   const { products, categories, failed } = await loadCatalog();
 

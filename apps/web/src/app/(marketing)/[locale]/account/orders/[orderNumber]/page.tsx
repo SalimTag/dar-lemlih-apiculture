@@ -1,11 +1,14 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
+import { setRequestLocale } from 'next-intl/server';
 import { getOrder } from '@/lib/api/orders';
 import { ApiClientError } from '@/lib/api/client';
 import { OrderStatusBadge } from '@/components/account/order-status-badge';
 import { formatDate, formatPriceMAD } from '@/lib/format';
 import type { Locale } from '@/i18n/routing';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = { title: 'Détail de commande · Dar Lemlih' };
 
@@ -14,6 +17,8 @@ export default async function OrderDetailPage({
 }: {
   params: { locale: Locale; orderNumber: string };
 }) {
+  setRequestLocale(params.locale);
+
   let order: Awaited<ReturnType<typeof getOrder>>;
   try {
     order = await getOrder(decodeURIComponent(params.orderNumber));

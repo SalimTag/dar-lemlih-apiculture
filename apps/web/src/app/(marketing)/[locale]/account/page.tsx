@@ -1,10 +1,15 @@
 import { redirect } from 'next/navigation';
+import { setRequestLocale } from 'next-intl/server';
 import { getSessionAction } from '@/app/actions/auth';
 import type { Locale } from '@/i18n/routing';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = { title: 'Mon profil · Dar Lemlih' };
 
 export default async function AccountPage({ params }: { params: { locale: Locale } }) {
+  setRequestLocale(params.locale);
+
   const session = await getSessionAction();
   if (!session) {
     redirect(`/${params.locale}/login?redirectTo=/${params.locale}/account`);

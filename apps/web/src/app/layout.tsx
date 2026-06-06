@@ -2,10 +2,9 @@ import type { Metadata, Viewport } from 'next';
 import { Cormorant_Garamond, Inter, Noto_Sans_Arabic } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { getLocale } from 'next-intl/server';
 import Providers from './providers';
 import './globals.css';
-import { isRTL, type Locale } from '@/i18n/routing';
+import { defaultLocale, isRTL } from '@/i18n/routing';
 
 // Display: Cormorant Garamond — premium editorial serif used for hero headings,
 // product names, section H2s. Loaded with light + regular + semibold weights
@@ -83,13 +82,12 @@ export const viewport: Viewport = {
   initialScale: 1
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = (await getLocale()) as Locale;
-  const direction = isRTL(locale) ? 'rtl' : 'ltr';
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const direction = isRTL(defaultLocale) ? 'rtl' : 'ltr';
 
   return (
     <html
-      lang={locale}
+      lang={defaultLocale}
       dir={direction}
       suppressHydrationWarning
       className={`${display.variable} ${sans.variable} ${arabic.variable}`}

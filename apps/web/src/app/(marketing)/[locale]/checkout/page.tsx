@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Section } from '@/components/blocks/section';
 import { CheckoutForm } from './checkout-form';
 import { CheckoutStepper } from '@/components/checkout/stepper';
@@ -8,11 +8,13 @@ import { ApiClientError } from '@/lib/api/client';
 import { getSessionAction } from '@/app/actions/auth';
 import type { Locale } from '@/i18n/routing';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = { title: 'Commande · Dar Lemlih' };
 
 export default async function CheckoutPage({ params }: { params: { locale: Locale } }) {
   const { locale } = params;
-  unstable_setRequestLocale(locale);
+  setRequestLocale(locale);
 
   const session = await getSessionAction();
   if (!session) {

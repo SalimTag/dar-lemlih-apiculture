@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { XCircle } from 'lucide-react';
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { Section } from '@/components/blocks/section';
 import { Button } from '@/components/ui/button';
 import type { Locale } from '@/i18n/routing';
@@ -8,7 +8,7 @@ import type { Locale } from '@/i18n/routing';
 export const metadata = { title: 'Paiement annulé · Dar Lemlih' };
 
 export default async function CheckoutCancelPage({ params }: { params: { locale: Locale } }) {
-  unstable_setRequestLocale(params.locale);
+  setRequestLocale(params.locale);
 
   return (
     <Section>

@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { unstable_setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { Section } from '@/components/blocks/section';
 import { getSessionAction } from '@/app/actions/auth';
 import { AccountSidebar } from './account-sidebar';
@@ -12,7 +12,7 @@ export default async function AccountLayout({
   children: React.ReactNode;
   params: { locale: Locale };
 }) {
-  unstable_setRequestLocale(params.locale);
+  setRequestLocale(params.locale);
 
   const session = await getSessionAction();
   if (!session) {

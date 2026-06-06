@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import type { Locale } from '@/i18n/routing';
 import { Section } from '@/components/blocks/section';
 import { Card } from '@/components/ui/card';
@@ -42,6 +42,8 @@ export async function generateMetadata({ params }: { params: { locale: Locale } 
 }
 
 export default async function BlogPage({ params }: { params: { locale: Locale } }) {
+  setRequestLocale(params.locale);
+
   const t = await getTranslations({ locale: params.locale, namespace: 'blog' });
 
   return (

@@ -1,5 +1,6 @@
 package com.darlemlih.apiculture.payments;
 
+import com.darlemlih.apiculture.exceptions.BadRequestException;
 import com.stripe.Stripe;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.exception.StripeException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Service
 @ConditionalOnProperty(name = "payment.provider", havingValue = "stripe")
@@ -39,8 +41,11 @@ public class StripePaymentGateway implements PaymentGateway {
         try {
             log.info("Creating Stripe checkout session for order: {} with amount: {} {}", orderId, amount, currency);
 
-            // Convert amount to cents (Stripe uses smallest currency unit)
-            long amountInCents = amount.multiply(new BigDecimal(100)).longValue();
+            // Convert amount to centimes (Stripe uses smallest currency unit for MAD).
+            // setScale(0, HALF_UP) rounds correctly; longValueExact() prevents silent overflow.
+            long amountInCents = amount.multiply(BigDecimal.valueOf(100))
+                    .setScale(0, RoundingMode.HALF_UP)
+                    .longValueExact();
 
             SessionCreateParams params = SessionCreateParams.builder()
                     .setMode(SessionCreateParams.Mode.PAYMENT)
@@ -90,7 +95,8 @@ public class StripePaymentGateway implements PaymentGateway {
 
         } catch (StripeException e) {
             log.error("Failed to create Stripe checkout session for order: {}", orderId, e);
-            throw new RuntimeException("Failed to create payment session: " + e.getMessage(), e);
+            throw new BadRequestException("STRIPE_SESSION_FAILED",
+                    "Failed to create payment session: " + e.getMessage());
         }
     }
 
@@ -120,7 +126,9 @@ public class StripePaymentGateway implements PaymentGateway {
         try {
             log.info("Processing refund for payment intent: {} with amount: {}", paymentIntentId, amount);
 
-            long amountInCents = amount.multiply(new BigDecimal(100)).longValue();
+            long amountInCents = amount.multiply(BigDecimal.valueOf(100))
+                    .setScale(0, RoundingMode.HALF_UP)
+                    .longValueExact();
 
             RefundCreateParams params = RefundCreateParams.builder()
                     .setPaymentIntent(paymentIntentId)
@@ -142,7 +150,8 @@ public class StripePaymentGateway implements PaymentGateway {
 
         } catch (StripeException e) {
             log.error("Failed to process refund for payment intent: {}", paymentIntentId, e);
-            throw new RuntimeException("Failed to process refund: " + e.getMessage(), e);
+            throw new BadRequestException("STRIPE_REFUND_FAILED",
+                    "Failed to process refund: " + e.getMessage());
         }
     }
 }

@@ -14,10 +14,11 @@ public class MockPaymentGateway implements PaymentGateway {
 
     @Override
     public PaymentSession createCheckoutSession(String orderId, BigDecimal amount, String currency, String successUrl, String cancelUrl) {
+        String separator = successUrl.contains("?") ? "&" : "?";
         return PaymentSession.builder()
                 .sessionId("mock_session_" + UUID.randomUUID())
                 .paymentIntentId("pi_mock_" + UUID.randomUUID())
-                .checkoutUrl(successUrl + "?mock=true")
+                .checkoutUrl(successUrl + separator + "mock=true")
                 .status("pending")
                 .build();
     }

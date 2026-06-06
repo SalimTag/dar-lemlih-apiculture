@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, unstable_setRequestLocale } from 'next-intl/server';
+import { getMessages, setRequestLocale } from 'next-intl/server';
 import { locales, type Locale } from '@/i18n/routing';
 import { ResetPasswordForm } from './reset-password-form';
 import { CookieBanner } from '@/components/layout/cookie-banner';
@@ -21,7 +21,7 @@ export default async function ResetPasswordPage({
 }) {
   const { locale } = params;
   if (!locales.includes(locale)) notFound();
-  unstable_setRequestLocale(locale);
+  setRequestLocale(locale);
 
   const messages = await getMessages();
   const tokenRaw = searchParams.token;

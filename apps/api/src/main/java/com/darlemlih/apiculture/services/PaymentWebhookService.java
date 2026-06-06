@@ -1,10 +1,13 @@
 package com.darlemlih.apiculture.services;
 
 import com.darlemlih.apiculture.entities.Order;
+import com.darlemlih.apiculture.entities.OrderItem;
+import com.darlemlih.apiculture.entities.Product;
 import com.darlemlih.apiculture.entities.WebhookEvent;
 import com.darlemlih.apiculture.entities.enums.OrderStatus;
 import com.darlemlih.apiculture.payments.PaymentGateway;
 import com.darlemlih.apiculture.repositories.OrderRepository;
+import com.darlemlih.apiculture.repositories.ProductRepository;
 import com.darlemlih.apiculture.repositories.WebhookEventRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,13 +23,17 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class PaymentWebhookService {
+
+    @org.springframework.beans.factory.annotation.Autowired
+    @org.springframework.context.annotation.Lazy
+    private PaymentWebhookService self;
 
     private final PaymentGateway paymentGateway;
     private final WebhookEventRepository webhookEventRepository;
     private final OrderRepository orderRepository;
+    private final ProductRepository productRepository;
     private final EmailService emailService;
     private final ObjectMapper objectMapper;
 
@@ -62,9 +69,29 @@ public class PaymentWebhookService {
         String eventId = json.path("id").asText();
         String eventType = json.path("type").asText();
 
-        // Idempotency: rely on the unique constraint on webhook_events.event_id.
-        // The pre-check is racy under concurrent retries, so we attempt the insert
-        // first and treat DataIntegrityViolationException as "already processed".
+        // 1. Save incoming webhook in its own transaction (committed immediately)
+        WebhookEvent event = self.saveWebhookEvent(eventId, eventType, payload, signature);
+        if (event == null) {
+            // Duplicate event, skip processing
+            return;
+        }
+
+        try {
+            // 2. Process actual order status updates and emails in standard transactional context
+            self.processBusinessLogic(json, eventType);
+
+            // 3. Mark processed in its own transaction (committed immediately)
+            self.markWebhookEventProcessed(event.getId());
+        } catch (Exception e) {
+            // 4. Mark failed in its own transaction (committed immediately) so audit is preserved
+            self.markWebhookEventFailed(event.getId(), e.getClass().getSimpleName() + ": " + e.getMessage());
+            log.error("Webhook handler {} failed for event {}", eventType, eventId, e);
+            throw e;
+        }
+    }
+
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRES_NEW)
+    public WebhookEvent saveWebhookEvent(String eventId, String eventType, String payload, String signature) {
         WebhookEvent event = WebhookEvent.builder()
                 .provider("stripe")
                 .eventId(eventId)
@@ -74,35 +101,53 @@ public class PaymentWebhookService {
                 .processed(false)
                 .build();
         try {
-            webhookEventRepository.saveAndFlush(event);
+            return webhookEventRepository.saveAndFlush(event);
         } catch (DataIntegrityViolationException duplicate) {
-            log.info("Duplicate webhook event {} — skipping", eventId);
-            return;
-        }
-
-        try {
-            switch (eventType) {
-                case "checkout.session.completed":
-                    handleCheckoutSessionCompleted(json);
-                    break;
-                case "payment_intent.succeeded":
-                    handlePaymentIntentSucceeded(json);
-                    break;
-                case "payment_intent.payment_failed":
-                    handlePaymentFailure(json);
-                    break;
-                default:
-                    log.info("Unhandled webhook event type: {}", eventType);
+            Optional<WebhookEvent> existing = webhookEventRepository.findByEventId(eventId);
+            if (existing.isPresent()
+                    && !Boolean.TRUE.equals(existing.get().getProcessed())
+                    && existing.get().getError() != null) {
+                log.info("Retrying previously failed webhook event {}", eventId);
+                return existing.get();
             }
+            log.info("Duplicate webhook event {} — skipping", eventId);
+            return null;
+        }
+    }
 
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRES_NEW)
+    public void markWebhookEventProcessed(Long id) {
+        webhookEventRepository.findById(id).ifPresent(event -> {
             event.setProcessed(true);
             event.setProcessedAt(LocalDateTime.now());
+            event.setError(null);
             webhookEventRepository.save(event);
-        } catch (Exception e) {
-            event.setError(e.getClass().getSimpleName() + ": " + e.getMessage());
+        });
+    }
+
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRES_NEW)
+    public void markWebhookEventFailed(Long id, String error) {
+        webhookEventRepository.findById(id).ifPresent(event -> {
+            event.setProcessed(false);
+            event.setError(error);
             webhookEventRepository.save(event);
-            log.error("Webhook handler {} failed for event {}", eventType, eventId, e);
-            throw e;
+        });
+    }
+
+    @Transactional
+    public void processBusinessLogic(JsonNode json, String eventType) {
+        switch (eventType) {
+            case "checkout.session.completed":
+                handleCheckoutSessionCompleted(json);
+                break;
+            case "payment_intent.succeeded":
+                handlePaymentIntentSucceeded(json);
+                break;
+            case "payment_intent.payment_failed":
+                handlePaymentFailure(json);
+                break;
+            default:
+                log.info("Unhandled webhook event type: {}", eventType);
         }
     }
 
@@ -179,6 +224,24 @@ public class PaymentWebhookService {
         }
         order.setStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
-        log.info("Order {} marked as CANCELLED due to payment failure", order.getOrderNumber());
+
+        // Restore stock that was decremented during checkout.
+        restoreStock(order);
+
+        log.info("Order {} marked as CANCELLED due to payment failure (stock restored)", order.getOrderNumber());
+    }
+
+    /**
+     * Re-adds the quantities from each order item back to the respective product's
+     * stock. Called when a payment fails so inventory is not permanently leaked.
+     */
+    private void restoreStock(Order order) {
+        for (OrderItem item : order.getItems()) {
+            Product product = productRepository.findById(item.getProduct().getId())
+                    .orElseThrow(() -> new IllegalStateException(
+                            "Cannot restore stock for missing product " + item.getProduct().getId()));
+            product.setStockQuantity(product.getStockQuantity() + item.getQuantity());
+            productRepository.save(product);
+        }
     }
 }

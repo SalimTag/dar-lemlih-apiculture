@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -93,7 +94,7 @@ public class ProductService {
                 .isHalal(product.getIsHalal())
                 .isActive(product.getIsActive())
                 .isFeatured(product.getIsFeatured())
-                .images(product.getImages())
+                .images(product.getImages() != null ? new ArrayList<>(product.getImages()) : new ArrayList<>())
                 .categoryId(product.getCategory() != null ? product.getCategory().getId() : null)
                 .categoryName(product.getCategory() != null ? product.getCategory().getNameFr() : null)
                 .build();

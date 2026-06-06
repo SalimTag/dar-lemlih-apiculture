@@ -21,7 +21,8 @@ public class CartService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-    private static final BigDecimal SHIPPING_COST = new BigDecimal("30.00");
+    @org.springframework.beans.factory.annotation.Value("${app.shipping-cost:30.00}")
+    private BigDecimal shippingCost;
 
     public CartDto getCart(String userEmail) {
         User user = requireUser(userEmail);
@@ -114,7 +115,7 @@ public class CartService {
 
     private CartDto toDto(Cart cart) {
         BigDecimal subtotal = cart.getTotal();
-        BigDecimal total = subtotal.add(SHIPPING_COST);
+        BigDecimal total = subtotal.add(shippingCost);
 
         return CartDto.builder()
                 .id(cart.getId())
@@ -122,7 +123,7 @@ public class CartService {
                         .map(this::toItemDto)
                         .collect(Collectors.toList()))
                 .subtotal(subtotal)
-                .shippingCost(SHIPPING_COST)
+                .shippingCost(shippingCost)
                 .total(total)
                 .currency("MAD")
                 .totalItems(cart.getTotalItems())

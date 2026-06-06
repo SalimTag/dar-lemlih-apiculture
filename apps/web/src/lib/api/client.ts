@@ -32,6 +32,8 @@ interface FetchOptions {
   body?: Json;
   query?: Record<string, string | number | boolean | undefined | null>;
   headers?: Record<string, string>;
+  cache?: RequestCache;
+  next?: { revalidate?: number };
   /** Skip the auto-refresh-on-401 retry (used internally to avoid loops). */
   skipRefresh?: boolean;
   /** When true, do not send the access-token Authorization header. */
@@ -101,7 +103,8 @@ export async function apiFetch<T>(path: string, options: FetchOptions = {}): Pro
     method: options.method ?? 'GET',
     headers,
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
-    cache: 'no-store'
+    cache: options.cache ?? (options.next ? undefined : 'no-store'),
+    next: options.next
   });
 
   if (res.status === 401 && !options.skipRefresh && !options.anonymous) {
@@ -114,7 +117,8 @@ export async function apiFetch<T>(path: string, options: FetchOptions = {}): Pro
         method: options.method ?? 'GET',
         headers,
         body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
-        cache: 'no-store'
+        cache: options.cache ?? (options.next ? undefined : 'no-store'),
+        next: options.next
       });
       if (!retry.ok) await parseError(retry);
       return parseBody<T>(retry);
