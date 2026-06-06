@@ -65,7 +65,7 @@ export function localizedProductDescription(p: NamedProductLike, locale: Locale)
  */
 export function resolveImageUrl(url: string | null | undefined): string {
   if (!url) {
-    return 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=800&q=80';
+    return 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=800&q=80';
   }
   if (url.startsWith('http://') || url.startsWith('https://')) return url;
   const base = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';

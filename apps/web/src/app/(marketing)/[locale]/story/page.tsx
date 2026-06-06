@@ -7,9 +7,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Leaf, Eye, RefreshCw } from 'lucide-react';
 
 const STORY_IMAGES = [
-  'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=1200&q=80',
   'https://images.unsplash.com/photo-1509731987499-ef6601bb7674?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=1200&q=80',
 ];
 
 const VALUE_ICONS = {

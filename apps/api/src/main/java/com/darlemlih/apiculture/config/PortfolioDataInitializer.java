@@ -69,7 +69,7 @@ public class PortfolioDataInitializer implements CommandLineRunner {
                 "Souss, Maroc",
                 true,
                 honeys,
-                List.of("https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=1200&q=85"));
+                List.of("https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=1200&q=85"));
 
         ensureProduct(
                 "HNY-THY-500",
@@ -87,7 +87,7 @@ public class PortfolioDataInitializer implements CommandLineRunner {
                 "Atlas, Maroc",
                 true,
                 honeys,
-                List.of("https://images.unsplash.com/photo-1558618666-fcd25c85f82e?auto=format&fit=crop&w=1200&q=85"));
+                List.of("https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=1200&q=85"));
 
         ensureProduct(
                 "HNY-EUC-500",
@@ -105,7 +105,7 @@ public class PortfolioDataInitializer implements CommandLineRunner {
                 "Gharb, Maroc",
                 false,
                 honeys,
-                List.of("https://images.unsplash.com/photo-1471943311424-646960669fbc?auto=format&fit=crop&w=1200&q=85"));
+                List.of("https://images.unsplash.com/photo-1471943038711-ddd2a7d4c9aa?auto=format&fit=crop&w=1200&q=85"));
 
         ensureProduct(
                 "POL-BEE-250",
@@ -123,7 +123,7 @@ public class PortfolioDataInitializer implements CommandLineRunner {
                 "Maroc",
                 false,
                 pollen,
-                List.of("https://images.unsplash.com/photo-1509731987499-ef6601bb7674?auto=format&fit=crop&w=1200&q=85"));
+                List.of("https://images.unsplash.com/photo-1567880905822-56f8e06fe630?auto=format&fit=crop&w=1200&q=85"));
 
         ensureProduct(
                 "HNY-MUL-1000",
@@ -141,7 +141,7 @@ public class PortfolioDataInitializer implements CommandLineRunner {
                 "Maroc",
                 false,
                 hiveProducts,
-                List.of("https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=1200&q=85"));
+                List.of("https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?auto=format&fit=crop&w=1200&q=85"));
 
         log.info("Portfolio catalog seed is ready.");
     }
