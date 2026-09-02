@@ -54,14 +54,14 @@ export function CartSheet() {
         <Button variant="ghost" size="icon" className="relative rounded-full" aria-label={t('nav.cart')}>
           <ShoppingBag className="h-5 w-5" />
           {totalItems > 0 && (
-            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-600 text-[10px] font-bold text-white shadow-sm">
+            <span className="absolute -end-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-600 text-[10px] font-bold text-white shadow-sm">
               {totalItems}
             </span>
           )}
         </Button>
       </SheetTrigger>
       <SheetContent className="flex w-full flex-col sm:max-w-md">
-        <SheetHeader className="space-y-2.5 pr-6">
+        <SheetHeader className="space-y-2.5 pe-6">
           <SheetTitle className="flex items-center gap-2">
             <ShoppingBag className="h-5 w-5" />
             {t('cart.title')}
@@ -98,7 +98,7 @@ export function CartSheet() {
           </div>
         ) : (
           <>
-            <ScrollArea className="flex-1 pr-4">
+            <ScrollArea className="flex-1 pe-4">
               <div className="flex flex-col gap-5 py-2">
                 {items.map(item => (
                   <div key={item.id} className="flex gap-4">
