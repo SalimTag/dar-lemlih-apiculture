@@ -19,9 +19,10 @@ public class RateLimitFilter extends OncePerRequestFilter {
     private static class Counter { long windowStart; int count; }
     private final Map<String, Counter> buckets = new ConcurrentHashMap<>();
     private static final long WINDOW_MS = 60_000; // 1 minute
-    private static final int MAX_AUTH = 20;    // per minute
-    private static final int MAX_CART = 60;    // per minute
-    private static final int MAX_CONTACT = 10; // per minute
+    private static final int MAX_AUTH = 20;     // per minute
+    private static final int MAX_CART = 60;     // per minute
+    private static final int MAX_CONTACT = 10;  // per minute
+    private static final int MAX_CHECKOUT = 15; // per minute
 
     /**
      * Eviction counter: every N requests we scan and remove entries that are
@@ -47,7 +48,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
             evictStaleEntries();
         }
 
-        String key = (request.getRemoteAddr() == null ? "unknown" : request.getRemoteAddr()) + ":" + group;
+        String clientIp = extractClientIp(request);
+        String key = clientIp + ":" + group;
         long now = Instant.now().toEpochMilli();
         Counter c = buckets.computeIfAbsent(key, k -> { Counter x = new Counter(); x.windowStart = now; x.count = 0; return x; });
         synchronized (c) {
@@ -64,8 +66,19 @@ public class RateLimitFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    private String extractClientIp(HttpServletRequest request) {
+        String forwarded = request.getHeader("X-Forwarded-For");
+        if (forwarded != null && !forwarded.isBlank()) {
+            int commaIdx = forwarded.indexOf(',');
+            return (commaIdx != -1) ? forwarded.substring(0, commaIdx).trim() : forwarded.trim();
+        }
+        String remoteAddr = request.getRemoteAddr();
+        return (remoteAddr != null && !remoteAddr.isBlank()) ? remoteAddr : "unknown";
+    }
+
     private String resolveGroup(String path) {
         if (path.startsWith("/api/auth/")) return "auth";
+        if (path.equals("/api/orders/checkout")) return "checkout";
         if (path.startsWith("/api/cart/") || path.equals("/api/cart")) return "cart";
         if (path.startsWith("/api/contact")) return "contact";
         return null;
@@ -73,10 +86,11 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
     private int resolveLimit(String group) {
         return switch (group) {
-            case "auth"    -> MAX_AUTH;
-            case "cart"    -> MAX_CART;
-            case "contact" -> MAX_CONTACT;
-            default        -> MAX_CART;
+            case "auth"     -> MAX_AUTH;
+            case "cart"     -> MAX_CART;
+            case "contact"  -> MAX_CONTACT;
+            case "checkout" -> MAX_CHECKOUT;
+            default         -> MAX_CART;
         };
     }
 

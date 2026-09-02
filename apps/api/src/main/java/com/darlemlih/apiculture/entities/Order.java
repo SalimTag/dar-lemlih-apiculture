@@ -66,5 +66,6 @@ public class Order extends BaseEntity {
     private String notes;
     
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @lombok.Builder.Default
     private List<OrderItem> items = new ArrayList<>();
 }
