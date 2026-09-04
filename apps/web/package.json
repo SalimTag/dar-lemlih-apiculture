@@ -8,7 +8,7 @@
     "build": "next build",
     "prebuild": "contentlayer build",
     "start": "next start",
-    "lint": "eslint .",
+    "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest --passWithNoTests",
     "test:watch": "vitest --watch",
