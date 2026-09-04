@@ -16,7 +16,7 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ['.next/**', 'dist/**', 'node_modules/**', 'contentlayer/generated/**']
+    ignores: ['.next/**', 'dist/**', 'node_modules/**', '.contentlayer/**', 'contentlayer/generated/**']
   },
   ...compat.config({
     extends: ['next/core-web-vitals', 'next/typescript']
@@ -27,7 +27,7 @@ export default [
     languageOptions: {
       parser: tsParser,
       parserOptions: {
-        projectService: { allowDefaultProject: true },
+        projectService: true,
         tsconfigRootDir: __dirname
       },
       globals: {

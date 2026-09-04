@@ -112,10 +112,10 @@ aws:
   endpoint: ${AWS_ENDPOINT_URL:http://localhost:4566}
   public-endpoint: ${AWS_PUBLIC_ENDPOINT:${aws.endpoint}}
   region: ${AWS_REGION:us-east-1}
-  access-key: ${AWS_ACCESS_KEY_ID:}
-  secret-key: ${AWS_SECRET_ACCESS_KEY:}
+  access-key: ${AWS_ACCESS_KEY_ID:test}
+  secret-key: ${AWS_SECRET_ACCESS_KEY:test}
   s3:
-    enabled: ${STORAGE_S3_ENABLED:true}
+    enabled: ${STORAGE_S3_ENABLED:false}
     bucket: ${S3_BUCKET:media}
 
 # OpenAPI Documentation
